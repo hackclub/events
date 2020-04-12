@@ -9,16 +9,16 @@ const Event = ({ id, slug, title, desc, leader, avatar, start, end, cal }) => (
     <Card
       as="a"
       variant="interactive"
-      sx={{ textDecoration: 'none', p: [2, 3] }}
+      sx={{ textDecoration: 'none', p: [3, 3] }}
     >
       <Box
         sx={{
           bg: past(start) ? 'muted' : 'primary',
           color: 'white',
-          m: [-2, -3],
-          py: [1, 2],
-          px: [2, 3],
-          mb: [2, 3]
+          m: -3,
+          py: 2,
+          px: 3,
+          mb: 3
         }}
       >
         <Text>
