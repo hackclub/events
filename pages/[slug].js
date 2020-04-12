@@ -1,5 +1,17 @@
-import { Box, Container, Heading, Text, Avatar, Flex, Button } from 'theme-ui'
+import { useState, useEffect } from 'react'
+import {
+  Avatar,
+  Box,
+  Button,
+  Card,
+  Container,
+  Flex,
+  Grid,
+  Heading,
+  Text
+} from 'theme-ui'
 import { Calendar } from 'react-feather'
+import RSVP from '../components/RSVP'
 import tt from 'tinytime'
 
 export default ({ event }) => (
@@ -76,6 +88,7 @@ export default ({ event }) => (
           <Calendar />
           Add to Google Calendar
         </Button>
+        <RSVP {...event} />
       </Box>
     </Container>
   </>
