@@ -1,17 +1,6 @@
-import { useState, useEffect } from 'react'
-import {
-  Avatar,
-  Box,
-  Button,
-  Card,
-  Container,
-  Flex,
-  Grid,
-  Heading,
-  Text
-} from 'theme-ui'
+import { Avatar, Box, Button, Container, Flex, Heading, Text } from 'theme-ui'
 import { Calendar } from 'react-feather'
-import RSVP from '../components/RSVP'
+import RSVP from '../components/rsvp'
 import tt from 'tinytime'
 
 export default ({ event }) => (
