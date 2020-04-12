@@ -6,7 +6,11 @@ const past = (dt) => new Date(dt) < new Date()
 
 const Event = ({ id, slug, title, desc, leader, avatar, start, end, cal }) => (
   <Link href="/[slug]" as={`/${slug}`} passHref>
-    <Card as="a" sx={{ textDecoration: 'none', p: [2, 3] }}>
+    <Card
+      as="a"
+      variant="interactive"
+      sx={{ textDecoration: 'none', p: [2, 3] }}
+    >
       <Box
         sx={{
           bg: past(start) ? 'muted' : 'primary',
