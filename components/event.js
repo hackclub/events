@@ -14,7 +14,7 @@ const Event = ({ id, slug, title, desc, leader, avatar, start, end, cal }) => (
       <Box
         sx={{
           bg: past(start) ? 'sunken' : 'primary',
-          color: 'white',
+          color: past(start) ? 'text' : 'white',
           m: -3,
           py: 2,
           px: 3,
