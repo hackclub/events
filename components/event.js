@@ -13,7 +13,7 @@ const Event = ({ id, slug, title, desc, leader, avatar, start, end, cal }) => (
     >
       <Box
         sx={{
-          bg: past(start) ? 'muted' : 'primary',
+          bg: past(start) ? 'sunken' : 'primary',
           color: 'white',
           m: -3,
           py: 2,
