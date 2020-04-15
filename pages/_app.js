@@ -2,6 +2,7 @@ import * as React from 'react'
 import NextApp from 'next/app'
 import Head from 'next/head'
 
+import Meta from '@hackclub/meta'
 import '@hackclub/theme/fonts/reg-bold.css'
 import theme from '@hackclub/theme'
 import { ThemeProvider } from 'theme-ui'
