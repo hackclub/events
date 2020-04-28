@@ -70,6 +70,7 @@ export default ({ event }) => (
         <Text variant="caption">
           {tt('{MM} {DD}, {YYYY}').render(new Date(event.start))}
         </Text>
+        { event.amaAvatar ? <Avatar size={128} sx={{ mt: 3  }} src={event.amaAvatar}></Avatar> : null }
         <Text sx={{ my: [2, 3], fontSize: [2, 3] }}>{event.desc}</Text>
         <Button
           as="a"
