@@ -70,12 +70,14 @@ export default ({ event }) => (
         <Text variant="caption">
           {tt('{MM} {DD}, {YYYY}').render(new Date(event.start))}
         </Text>
-        { event.amaAvatar ? <Avatar size={128} sx={{ mt: 3  }} src={event.amaAvatar}></Avatar> : null }
+        {event.amaAvatar ? (
+          <Avatar size={128} sx={{ mt: 3 }} src={event.amaAvatar}></Avatar>
+        ) : null}
         <Text sx={{ my: [2, 3], fontSize: [2, 3] }}>{event.desc}</Text>
         <Button
           as="a"
           taget="_blank"
-          href={event.cal}
+          onClick={() => window.open(event.cal, '_blank')}
           sx={{ display: 'inline-flex', alignItems: 'center' }}
         >
           <Calendar />
@@ -92,7 +94,7 @@ export const getStaticPaths = async () => {
   const { map } = require('lodash')
   const events = await getEvents()
   const slugs = map(events, 'slug')
-  const paths = slugs.map(slug => ({ params: { slug } }))
+  const paths = slugs.map((slug) => ({ params: { slug } }))
   return { paths, fallback: false }
 }
 
