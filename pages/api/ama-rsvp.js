@@ -30,7 +30,6 @@ function getRelationship(str) {
 
 export default async (req, res) => {
   const json = JSON.parse(req.body)
-  console.log(req.body)
 
   // check if record exists
   let record = await airtable.read({
@@ -41,7 +40,7 @@ export default async (req, res) => {
   if (record.length == 1) {
     record = record[0]
 
-    if (record.fields.AMAs.includes(json.id)) {
+    if ((record.fields.AMAs || []).includes(json.id)) {
       return res.json({ status: 'success', waiver: record.fields.Waiver })
     }
 

@@ -44,6 +44,7 @@ const AMARsvp = ({ id, amaId }) => {
           <div>
             <Label htmlFor="name">Name</Label>
             <Input
+              id="name"
               {...useField('name')}
               placeholder="Hacker McHackerston"
               sx={{ bg: 'sunken' }}
@@ -53,6 +54,7 @@ const AMARsvp = ({ id, amaId }) => {
           <div>
             <Label htmlFor="email">Email</Label>
             <Input
+              id="email"
               {...useField('email')}
               placeholder="mchackerston@hacker.org"
               sx={{ bg: 'sunken' }}
@@ -61,8 +63,9 @@ const AMARsvp = ({ id, amaId }) => {
           </div>
         </Grid>
         <Box sx={{ mb: 2 }}>
-          <Label>What's your Slack handle?</Label>
+          <Label sx={{ gridColumn: 'span 2' }} htmlFor="slack">What's your Slack handle?</Label>
           <Input
+            id="slack"
             {...useField('slack')}
             placeholder="@mchacker"
             sx={{ bg: 'sunken' }}
@@ -70,15 +73,14 @@ const AMARsvp = ({ id, amaId }) => {
           />
         </Box>
         <Box sx={{ mb: 3 }}>
-          <Label>How are you primarily associated with Hack Club?</Label>
+          <Label htmlFor="select">How are you primarily associated with Hack Club?</Label>
           <Select
             {...useField('association')}
             sx={{
-              bg: 'sunken',
-              border: 0,
-              color: 'text',
-              fontFamily: 'inherit'
+              bg: 'sunken'
             }}
+            id="select"
+            variant="forms.input"
             required
           >
             <option value="" disabled selected hidden>
