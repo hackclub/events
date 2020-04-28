@@ -11,69 +11,83 @@ import {
   Select,
   Checkbox
 } from 'theme-ui'
+import useForm from '../hooks/use-form'
 import fetch from 'isomorphic-unfetch'
+import Router from 'next/router'
 
-const AMARsvp = ({ id }) => {
-  const [email, setEmail] = useState('')
-  const [name, setName] = useState('')
-  const [association, setAssociation] = useState('')
-  const [status, setStatus] = useState('')
-  useEffect(() => {
-    setTimeout(() => {
-      setEmail('')
-      setName('')
-      setAssociation('')
-    }, 2000)
-  }, [status])
+const AMARsvp = ({ id, amaId }) => {
+  const { status, formProps, useField } = useForm(
+    '/api/ama-rsvp',
+    r => {
+      if (!r.waiver) {
+        Router.push('/waiver')
+      }
+    },
+    {
+      clearOnSubmit: 2000,
+      method: 'post',
+      extraData: {
+        id: amaId
+      }
+    }
+  )
+
+  useEffect(() => {}, [status])
+
   return (
     <Card sx={{ mt: [3, 4] }}>
       <Heading variant="headline" sx={{ mt: 0, mb: 1 }}>
         RSVP for this AMA
       </Heading>
-      <form
-        action={`/api/rsvp?id=${id}`}
-        onSubmit={e => {
-          e.preventDefault()
-          fetch(`/api/rsvp?id=${id}`, {
-            method: 'POST',
-            data: JSON.stringify({ phone })
-          })
-            .then(r => r.json())
-            .then(r => setStatus(r.status))
-        }}
-      >
+      <form {...formProps}>
         <Grid gap={3} columns="1fr 1fr" sx={{ alignItems: 'end', mb: 2 }}>
           <div>
             <Label htmlFor="name">Name</Label>
             <Input
-              type="text"
-              id="phone"
-              name="name"
+              {...useField('name')}
               placeholder="Hacker McHackerston"
               sx={{ bg: 'sunken' }}
+              required
             />
           </div>
           <div>
             <Label htmlFor="email">Email</Label>
             <Input
-              type="email"
-              id="email"
-              name="email"
+              {...useField('email')}
               placeholder="mchackerston@hacker.org"
               sx={{ bg: 'sunken' }}
+              required
             />
           </div>
         </Grid>
+        <Box sx={{ mb: 2 }}>
+          <Label>What's your Slack handle?</Label>
+          <Input
+            {...useField('slack')}
+            placeholder="@mchacker"
+            sx={{ bg: 'sunken' }}
+            required
+          />
+        </Box>
         <Box sx={{ mb: 3 }}>
           <Label>How are you primarily associated with Hack Club?</Label>
           <Select
-            sx={{ bg: 'sunken', border: 0, color: 'text', fontFamily: 'inherit' }}
-            defaultValue="Select..."
+            {...useField('association')}
+            sx={{
+              bg: 'sunken',
+              border: 0,
+              color: 'text',
+              fontFamily: 'inherit'
+            }}
+            required
           >
-            <option>I lead a club</option>
-            <option>I am a club member</option>
-            <option>I am active on Slack</option>
-            <option>I'm a Hack Club alum</option>
+            <option value="" disabled selected hidden>
+              Select...
+            </option>
+            <option value="club-leader">I lead a club</option>
+            <option value="club-member">I am a club member</option>
+            <option value="slack-member">I am active on Slack</option>
+            <option value="alum">I'm a Hack Club alum</option>
           </Select>
         </Box>
 
