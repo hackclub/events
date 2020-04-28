@@ -63,7 +63,9 @@ const AMARsvp = ({ id, amaId }) => {
           </div>
         </Grid>
         <Box sx={{ mb: 2 }}>
-          <Label sx={{ gridColumn: 'span 2' }} htmlFor="slack">What's your Slack handle?</Label>
+          <Label sx={{ gridColumn: 'span 2' }} htmlFor="slack">
+            What's your Slack handle?
+          </Label>
           <Input
             id="slack"
             {...useField('slack')}
@@ -73,7 +75,9 @@ const AMARsvp = ({ id, amaId }) => {
           />
         </Box>
         <Box sx={{ mb: 3 }}>
-          <Label htmlFor="select">How are you primarily associated with Hack Club?</Label>
+          <Label htmlFor="select">
+            How are you primarily associated with Hack Club?
+          </Label>
           <Select
             {...useField('association')}
             sx={{
@@ -89,7 +93,8 @@ const AMARsvp = ({ id, amaId }) => {
             <option value="club-leader">I lead a club</option>
             <option value="club-member">I am a club member</option>
             <option value="slack-member">I am active on Slack</option>
-            <option value="alum">I'm a Hack Club alum</option>
+            <option value="alum">I am a Hack Club alum</option>
+            <option value="none">None of the above</option>
           </Select>
         </Box>
 

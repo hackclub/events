@@ -22,7 +22,8 @@ function getRelationship(str) {
     'club-leader': 'Club Leader',
     'club-member': 'Club Member',
     'slack-member': 'Slack Member',
-    alum: 'Alumni'
+    alum: 'Alumni',
+    none: 'No relation'
   }
 
   return get[str]
