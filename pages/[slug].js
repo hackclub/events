@@ -1,6 +1,7 @@
 import { Avatar, Box, Button, Container, Flex, Heading, Text } from 'theme-ui'
 import { Calendar } from 'react-feather'
 import RSVP from '../components/rsvp'
+import AMARsvp from '../components/ama-rsvp'
 import tt from 'tinytime'
 
 export default ({ event }) => (
@@ -18,7 +19,9 @@ export default ({ event }) => (
             fontSize: 2
           }}
         >
-          <Text as="span">An event by</Text>
+          <Text as="span">
+            {event.ama ? 'An event hosted by' : 'An event by'}
+          </Text>
           <Avatar
             src={event.avatar}
             alt={`${event.leader} profile picture`}
@@ -77,7 +80,7 @@ export default ({ event }) => (
           <Calendar />
           Add to Google Calendar
         </Button>
-        <RSVP {...event} />
+        {event.ama ? <AMARsvp {...event} /> : <RSVP {...event} />}
       </Box>
     </Container>
   </>
@@ -88,7 +91,7 @@ export const getStaticPaths = async () => {
   const { map } = require('lodash')
   const events = await getEvents()
   const slugs = map(events, 'slug')
-  const paths = slugs.map((slug) => ({ params: { slug } }))
+  const paths = slugs.map(slug => ({ params: { slug } }))
   return { paths, fallback: false }
 }
 
