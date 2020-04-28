@@ -40,7 +40,7 @@ const AMARsvp = ({ id, amaId }) => {
         RSVP for this AMA
       </Heading>
       <form {...formProps}>
-        <Grid gap={3} columns="1fr 1fr" sx={{ alignItems: 'end', mb: 2 }}>
+        <Grid gap={3} columns="1fr 1fr" sx={{ mb: 3 }}>
           <div>
             <Label htmlFor="name">Name</Label>
             <Input
