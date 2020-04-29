@@ -33,34 +33,51 @@ export default () => {
     return clearInterval(check)
   }, [])
   const { colorMode } = useThemeUI()
-  const bg = colorMode === 'dark' ? 'dark' : 'cyan'
-  const color = colorMode === 'dark' ? 'yellow' : 'white'
   return (
-    <Box as="main" sx={{ bg, flex: '1 1 auto' }}>
+    <Box
+      as="main"
+      sx={{
+        backgroundColor: 'blue',
+        color: 'white',
+        background:
+          'linear-gradient(to bottom, rgba(0, 0, 0, 0.325), rgba(0, 0, 0, 0.5)), url(https://cdn.glitch.com/a7605379-7582-4aac-8f44-45bbdfca0cfa%2FJackConte_2017-embed-2.jpg?v=1588191231879)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'left bottom',
+        flex: '1 1 auto'
+      }}
+    >
       <style>{`#__next{display:flex;flex-direction:column;min-height:100vh;}`}</style>
-      <Container variant="narrow" sx={{ py: [3, 4, 5], textAlign: 'center' }}>
+      <Container
+        variant="narrow"
+        sx={{ py: [3, 4, 5], textAlign: 'center', textShadow: 'text' }}
+      >
         <Avatar
           size={128}
           src="https://dl.airtable.com/.attachmentThumbnails/42a5948c801c6f23d346807b9427faaa/2652e019"
           alt="Jack Conte"
+          sx={{
+            boxShadow: (theme) =>
+              `0 0 0 2px ${theme.colors.slate}, 0 0 0 6px ${theme.colors.red}`
+          }}
         />
-        <Text
-          variant="headline"
-          sx={{ color: 'primary', textTransform: 'uppercase', mb: 3 }}
-        >
+        <Text variant="headline" sx={{ textTransform: 'uppercase', mb: 3 }}>
           Hack Club
         </Text>
-        <Heading as="h1" variant="title" color="white">
+        <Heading
+          as="h1"
+          variant="title"
+          color="white"
+          sx={{ fontSize: [5, 6] }}
+        >
           AMA with Jack&nbsp;Conte
         </Heading>
         <Box
           sx={{
             border: '4px dashed',
-            borderColor: color,
+            borderColor: 'white',
             borderRadius: 'ultra',
-            color,
+            bg: 'rgba(0, 0, 0, 0.5)',
             p: [3, 4],
-            bg,
             mt: 4
           }}
         >
