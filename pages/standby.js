@@ -21,16 +21,17 @@ const glow = keyframes({
 export default () => {
   useEffect(() => {
     const check = setInterval(async () => {
-      let res = await fetch('api/redirect').then((res) => res.json())
+      let res = await fetch('https://standby.hackclub.com/').then((res) => res.json())
 
       if (res.redirect == null) {
-        console.log('not yet!')
         return
       }
 
       window.location.href = res.redirect
     }, 500)
-    return clearInterval(check)
+    return (() => {
+      clearInterval(check)
+    })
   }, [])
   const { colorMode } = useThemeUI()
   return (
