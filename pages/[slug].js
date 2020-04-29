@@ -104,5 +104,5 @@ export const getStaticProps = async ({ params }) => {
   const { find } = require('lodash')
   const events = await getEvents()
   const event = find(events, { slug })
-  return { props: { event } }
+  return { props: { event }, unstable_revalidate: 2 }
 }
