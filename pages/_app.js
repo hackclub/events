@@ -14,6 +14,7 @@ export default class App extends NextApp {
     return (
       <ThemeProvider theme={theme}>
         <Head>
+          <title>Hack Club Events</title>
           <Meta
             name="Hack Club"
             title="Events"
