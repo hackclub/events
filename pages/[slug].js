@@ -1,11 +1,34 @@
 import { Avatar, Box, Button, Container, Flex, Heading, Text } from 'theme-ui'
 import { Calendar } from 'react-feather'
+import Head from 'next/head'
+import Meta from '@hackclub/meta'
+import tt from 'tinytime'
+
 import RSVP from '../components/rsvp'
 import AMARsvp from '../components/ama-rsvp'
-import tt from 'tinytime'
 
 export default ({ event }) => (
   <>
+    <Head>
+      <title>{event.title}</title>
+      <Meta
+        title={event.title}
+        description={`${event.ama ? 'An event hosted by' : 'An event by'} ${
+          event.leader
+        } on ${tt('{MM} {DD}, {YYYY}').render(
+          new Date(event.start)
+        )} at Hack Club.`}
+        image={`https://workshop-cards.hackclub.com/${encodeURIComponent(
+          event.title
+        )}.png?brand=Events&caption=${encodeURIComponent(
+          `${event.leader} – ${tt('{MM} {DD}, {YYYY}').render(
+            new Date(event.start)
+          )}`
+        )}${
+          event.amaAvatar && `&images=${event.amaAvatar}&theme=dark`
+        }&images=${event.avatar}`}
+      />
+    </Head>
     <Box as="header" sx={{ bg: 'sheet' }}>
       <Container sx={{ textAlign: 'center', pt: [3, 4], pb: [3, 4] }}>
         <Heading as="h1" variant="title" sx={{ mb: 2 }}>
