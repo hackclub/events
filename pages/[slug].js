@@ -76,8 +76,8 @@ export default ({ event }) => (
         <Text sx={{ my: [2, 3], fontSize: [2, 3] }}>{event.desc}</Text>
         <Button
           as="a"
-          taget="_blank"
-          onClick={() => window.open(event.cal, '_blank')}
+          target="_blank"
+          href={event.cal}
           sx={{ display: 'inline-flex', alignItems: 'center' }}
         >
           <Calendar />
