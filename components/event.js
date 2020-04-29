@@ -15,10 +15,12 @@ const Event = ({ id, slug, title, desc, leader, avatar, start, end, cal }) => (
         sx={{
           bg: past(start) ? 'sunken' : 'primary',
           color: past(start) ? 'text' : 'white',
+          lineHeight: ['subheading', 'body'],
           m: -3,
           py: 2,
           px: 3,
-          mb: 3
+          mb: 3,
+          strong: { display: ['block', 'inline'] }
         }}
       >
         <Text>
@@ -36,12 +38,14 @@ const Event = ({ id, slug, title, desc, leader, avatar, start, end, cal }) => (
           color: 'muted'
         }}
       >
-        <Avatar
-          src={avatar}
-          alt={`${leader} profile picture`}
-          size={24}
-          sx={{ mr: 2 }}
-        />
+        {!avatar.includes('emoji') && (
+          <Avatar
+            src={avatar}
+            alt={`${leader} profile picture`}
+            size={24}
+            sx={{ height: 24, mr: 2 }}
+          />
+        )}
         <Text as="span">{leader}</Text>
       </Flex>
     </Card>

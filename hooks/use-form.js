@@ -27,6 +27,7 @@ const useForm = (
     const value = data[name]
     return {
       name,
+      id: name,
       type: name === 'email' ? 'email' : type,
       [checkbox ? 'checked' : 'value']: value || empty,
       onChange,

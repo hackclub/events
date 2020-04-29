@@ -26,7 +26,7 @@ export default ({ event }) => (
             src={event.avatar}
             alt={`${event.leader} profile picture`}
             size={36}
-            sx={{ mx: 2 }}
+            sx={{ mx: 2, height: 36 }}
           />
           <Text as="span">{event.leader}</Text>
         </Flex>
@@ -43,42 +43,48 @@ export default ({ event }) => (
         py: [3, 4]
       }}
     >
-      <Box
-        sx={{
-          borderRadius: ['extra', 'ultra'],
-          fontWeight: 'bold',
-          textAlign: 'center',
-          border: '4px solid',
-          borderColor: 'primary',
-          width: [96, 128]
-        }}
-      >
-        <Box sx={{ bg: 'primary', color: 'white', fontSize: [2, 3] }}>
-          {tt('{MM}').render(new Date(event.start))}
-        </Box>
+      <Box as="aside">
         <Box
-          sx={{ color: 'text', fontSize: [4, 5, 6], lineHeight: 'subheading' }}
+          sx={{
+            borderRadius: ['extra', 'ultra'],
+            fontWeight: 'bold',
+            textAlign: 'center',
+            border: '4px solid',
+            borderColor: 'primary',
+            width: [96, 128]
+          }}
         >
-          {tt('{DD}').render(new Date(event.start))}
+          <Box sx={{ bg: 'primary', color: 'white', fontSize: [2, 3] }}>
+            {tt('{MM}').render(new Date(event.start))}
+          </Box>
+          <Box
+            sx={{
+              color: 'text',
+              fontSize: [4, 5, 6],
+              lineHeight: 'subheading'
+            }}
+          >
+            {tt('{DD}').render(new Date(event.start))}
+          </Box>
         </Box>
+        {event.amaAvatar && (
+          <Avatar size={128} sx={{ mt: 4 }} src={event.amaAvatar}></Avatar>
+        )}
       </Box>
       <Box as="article">
-        <Text variant="subtitle" sx={{}}>
-          {tt('{h}:{mm} {a}').render(new Date(event.start))}–
-          {tt('{h}:{mm} {a}').render(new Date(event.end))}
-        </Text>
         <Text variant="caption">
           {tt('{MM} {DD}, {YYYY}').render(new Date(event.start))}
         </Text>
-        {event.amaAvatar ? (
-          <Avatar size={128} sx={{ mt: 3 }} src={event.amaAvatar}></Avatar>
-        ) : null}
+        <Text variant="subtitle">
+          {tt('{h}:{mm} {a}').render(new Date(event.start))}–
+          {tt('{h}:{mm} {a}').render(new Date(event.end))}
+        </Text>
         <Text sx={{ my: [2, 3], fontSize: [2, 3] }}>{event.desc}</Text>
         <Button
           as="a"
           target="_blank"
           href={event.cal}
-          sx={{ display: 'inline-flex', alignItems: 'center' }}
+          sx={{ bg: 'cyan', mb: [3, 4] }}
         >
           <Calendar />
           Add to Google Calendar
