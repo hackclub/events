@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { keyframes } from '@emotion/core'
 import {
   Box,
   Container,
@@ -10,6 +11,12 @@ import {
 } from 'theme-ui'
 import theme from '@hackclub/theme'
 import fetch from 'isomorphic-unfetch'
+
+const glow = keyframes({
+  '0%': { opacity: 0, boxShadow: '0 0 2px currentColor' },
+  '50%': { opacity: 1, boxShadow: '0 0 8px currentColor' },
+  '100%': { opacity: 0, boxShadow: '0 0 2px currentColor' }
+})
 
 export default () => {
   useEffect(() => {
@@ -29,13 +36,8 @@ export default () => {
   const bg = colorMode === 'dark' ? 'dark' : 'cyan'
   const color = colorMode === 'dark' ? 'yellow' : 'white'
   return (
-    <Box
-      as="main"
-      sx={{
-        bg,
-        minHeight: '100vh'
-      }}
-    >
+    <Box as="main" sx={{ bg, flex: '1 1 auto' }}>
+      <style>{`#__next{display:flex;flex-direction:column;min-height:100vh;}`}</style>
       <Container variant="narrow" sx={{ py: [3, 4, 5], textAlign: 'center' }}>
         <Avatar
           size={128}
@@ -62,10 +64,38 @@ export default () => {
             mt: 4
           }}
         >
-          <Text as="p" variant="headline" my={0}>
-            Please stand by…
+          <Text
+            as="p"
+            variant="headline"
+            sx={{
+              fontSize: [3, 4],
+              my: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            <Box
+              as="span"
+              sx={{
+                bg: 'red',
+                color: 'red',
+                display: 'inline-block',
+                width: 20,
+                height: 20,
+                borderRadius: 'circle',
+                mr: 3,
+                animation: `${glow} 1.5s infinite linear`
+              }}
+            />
+            <span>Please stand by…</span>
           </Text>
-          <Text as="p" fontSize={[2, 3]} mt={3}>
+          <Text
+            as="p"
+            fontSize={[2, 3]}
+            sx={{ lineHeight: 'caption' }}
+            mt={[2, 3]}
+          >
             You will be redirected when the event begins.
           </Text>
         </Box>
