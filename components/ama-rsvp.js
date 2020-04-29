@@ -42,7 +42,7 @@ const AMARsvp = ({ id, amaId }) => {
       <form {...formProps}>
         <Grid gap={3} columns="1fr 1fr" sx={{ mb: 3 }}>
           <div>
-            <Label htmlFor="name">Name</Label>
+            <Label htmlFor="name">Full Name</Label>
             <Input
               id="name"
               {...useField('name')}
