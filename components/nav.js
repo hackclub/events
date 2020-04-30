@@ -35,14 +35,14 @@ const BackButton = ({ to = '/', text = 'All Events' }) => (
 
 const Flag = () => (
   <A
-    href="https://hackclub.com"
+    href="https://hackclub.com/"
     target="_blank"
     rel="noopener noreferrer"
     aria-label="Hack Club homepage"
-    sx={{ mt: -3 }}
+    sx={{ mt: -3, lineHeight: 0 }}
   >
     <Image
-      src="https://hackclub.com/orpheus_flag.svg"
+      src="https://assets.hackclub.com/flag-orpheus-top.svg"
       alt="Hack Club flag"
       sx={{ width: [96, 128] }}
     />
