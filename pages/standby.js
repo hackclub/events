@@ -12,6 +12,14 @@ import {
 import theme from '@hackclub/theme'
 import fetch from 'isomorphic-unfetch'
 
+const data = {
+  first: 'Simone',
+  last: 'Giertz',
+  avatar: 'https://cdn.glitch.com/a4a6870f-4bcd-4112-ac0b-7592a8d488ab%2F2020-05-04_avatar.jpeg?v=1588619417108',
+  bg: 'https://cdn.glitch.com/a4a6870f-4bcd-4112-ac0b-7592a8d488ab%2F2020-05-04_img.jpeg?v=1588619256468'
+}
+data.name = `${data.first} ${data.last}`
+
 const glow = keyframes({
   '0%': { opacity: 0, boxShadow: '0 0 2px currentColor' },
   '50%': { opacity: 1, boxShadow: '0 0 8px currentColor' },
@@ -41,7 +49,7 @@ export default () => {
         backgroundColor: 'blue',
         color: 'white',
         background:
-          'linear-gradient(to bottom, rgba(0, 0, 0, 0.325), rgba(0, 0, 0, 0.5)), url(https://cdn.glitch.com/a7605379-7582-4aac-8f44-45bbdfca0cfa%2FJackConte_2017-embed-2.jpg?v=1588191231879)',
+          `linear-gradient(to bottom, rgba(0, 0, 0, 0.325), rgba(0, 0, 0, 0.5)), url(${data.bg})`,
         backgroundSize: 'cover',
         backgroundPosition: 'left bottom',
         flex: '1 1 auto'
@@ -54,8 +62,8 @@ export default () => {
       >
         <Avatar
           size={128}
-          src="https://dl.airtable.com/.attachmentThumbnails/42a5948c801c6f23d346807b9427faaa/2652e019"
-          alt="Jack Conte"
+          src={data.avatar}
+          alt={data.name}
           sx={{
             boxShadow: (theme) =>
               `0 0 0 2px ${theme.colors.slate}, 0 0 0 6px ${theme.colors.red}`
@@ -70,7 +78,7 @@ export default () => {
           color="white"
           sx={{ fontSize: [5, 6] }}
         >
-          AMA with Jack&nbsp;Conte
+          AMA with {data.first}&nbsp;{data.last}
         </Heading>
         <Box
           sx={{
