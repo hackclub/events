@@ -24,7 +24,7 @@ const useForm = (
     const checkbox = type === 'checkbox'
     const empty = checkbox ? false : ''
     const onChange = (e) => onFieldChange(e, name, type)
-    const value = data[name]
+    const value = data[name] || empty
     return {
       name,
       id: name,
@@ -46,7 +46,7 @@ const useForm = (
     setStatus('submitting')
     fetch(action, {
       method,
-      body: JSON.stringify({...data, ...options.extraData})
+      body: JSON.stringify({ ...data, ...options.extraData })
     })
       .then((r) => r.json())
       .then((r) => {

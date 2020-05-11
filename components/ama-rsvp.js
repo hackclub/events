@@ -71,7 +71,7 @@ const AMARsvp = ({ id, amaId }) => {
         <Label sx={{ gridColumn: 'span 2' }}>
           How are you primarily associated with Hack Club?
           <Select {...useField('association')} variant="forms.input" required>
-            <option value="" disabled selected hidden>
+            <option value="" disabled hidden>
               Select one…
             </option>
             <option value="club-leader">I lead a club</option>
