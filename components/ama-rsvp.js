@@ -88,7 +88,8 @@ const AMARsvp = ({ id, amaId }) => {
           sx={{
             gridColumn: 'span 2',
             justifyContent: 'center',
-            bg: status === 'success' ? 'green' : 'primary'
+            bg: status === 'success' ? 'green' : 'primary',
+            color: 'white'
           }}
         />
       </Grid>

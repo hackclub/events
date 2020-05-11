@@ -120,7 +120,7 @@ export default ({ event }) => (
       </Box>
     </Container>
     {event.ama && (
-      <Box as="section" bg="sheet" py={[4, 5]}>
+      <Box as="section" bg="sunken" py={[4, 5]}>
         <Container
           as="section"
           sx={{
@@ -143,7 +143,7 @@ export default ({ event }) => (
               as="a"
               target="_blank"
               href="https://www.twitch.tv/HackClubHQ"
-              sx={{ bg: '#9147ff', mr: 3, mb: [3, 4] }}
+              sx={{ bg: '#9147ff', color: 'white', mr: 3, mb: [3, 4] }}
             >
               <Twitch />
               Follow on Twitch
@@ -152,7 +152,7 @@ export default ({ event }) => (
               as="a"
               target="_blank"
               href="https://www.youtube.com/channel/UCQzO0jpcRkP-9eWKMpJyB0w"
-              sx={{ bg: 'red', mb: [3, 4] }}
+              sx={{ bg: 'red', color: 'white', mb: [3, 4] }}
             >
               <Youtube />
               Subscribe on YouTube
