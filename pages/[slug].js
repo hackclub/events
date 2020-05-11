@@ -1,5 +1,15 @@
-import { Avatar, Box, Button, Container, Flex, Heading, Text } from 'theme-ui'
-import { Calendar } from 'react-feather'
+import {
+  Avatar,
+  Box,
+  Button,
+  Card,
+  Container,
+  Flex,
+  Heading,
+  Link,
+  Text
+} from 'theme-ui'
+import { Calendar, Twitch, Youtube } from 'react-feather'
 import Head from 'next/head'
 import Meta from '../components/meta'
 import tt from 'tinytime'
@@ -7,8 +17,7 @@ import tt from 'tinytime'
 import RSVP from '../components/rsvp'
 import AMARsvp from '../components/ama-rsvp'
 
-const fullDate = (event) =>
-  tt('{MM} {DD}, {YYYY}').render(new Date(event.start))
+const fullDate = event => tt('{MM} {DD}, {YYYY}').render(new Date(event.start))
 
 export default ({ event }) => (
   <>
@@ -17,14 +26,14 @@ export default ({ event }) => (
       title={event.title}
       description={`${event.ama ? 'An event hosted by' : 'An event by'} ${
         event.leader
-      } on ${fullDate(event)} at Hack Club.`}
+        } on ${fullDate(event)} at Hack Club.`}
       image={`https://workshop-cards.hackclub.com/${encodeURIComponent(
         event.title
       )}.png?brand=Events&caption=${encodeURIComponent(
         `${event.leader} – ${fullDate(event)}`
       )}${event.amaAvatar && `&images=${event.amaAvatar}&theme=dark`}&images=${
         event.avatar
-      }`}
+        }`}
     />
     <Box as="header" sx={{ bg: 'sheet' }}>
       <Container sx={{ textAlign: 'center', pt: [3, 4], pb: [3, 4] }}>
@@ -107,9 +116,51 @@ export default ({ event }) => (
           <Calendar />
           Add to Google Calendar
         </Button>
-        {event.ama ? <AMARsvp {...event} /> : <RSVP {...event} />}
+        {!event.ama && <RSVP {...event} />}
       </Box>
     </Container>
+    {event.ama && (
+      <Box as="section" bg="sheet" py={[4, 5]}>
+        <Container
+          as="section"
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: [null, 'repeat(2, 1fr)'],
+            gridGap: [3, 4],
+            maxWidth: 'copyPlus'
+          }}
+        >
+          <AMARsvp {...event} />
+          <Card>
+            <Heading as="h2" variant="headline" mt={0}>
+              Not part of the{' '}
+              <Link href="https://hackclub.com/">Hack&nbsp;Club</Link> Slack?
+            </Heading>
+            <Text variant="subtitle" mb={[3, 4]}>
+              We’ll livestream the event on Twitch & YouTube.
+            </Text>
+            <Button
+              as="a"
+              target="_blank"
+              href="https://www.twitch.tv/HackClubHQ"
+              sx={{ bg: '#9147ff', mr: 3, mb: [3, 4] }}
+            >
+              <Twitch />
+              Follow on Twitch
+            </Button>
+            <Button
+              as="a"
+              target="_blank"
+              href="https://www.youtube.com/channel/UCQzO0jpcRkP-9eWKMpJyB0w"
+              sx={{ bg: 'red', mb: [3, 4] }}
+            >
+              <Youtube />
+              Subscribe on YouTube
+            </Button>
+          </Card>
+        </Container>
+      </Box>
+    )}
   </>
 )
 

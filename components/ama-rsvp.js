@@ -33,7 +33,7 @@ const AMARsvp = ({ id, amaId }) => {
   )
 
   return (
-    <Card sx={{ mt: [3, 4] }}>
+    <Card>
       <Heading variant="headline" sx={{ mt: 0, mb: 1 }}>
         RSVP for this AMA
       </Heading>
