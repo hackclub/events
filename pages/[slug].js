@@ -29,7 +29,7 @@ export default ({ event }) => (
         } on ${fullDate(event)} at Hack Club.`}
       image={`https://workshop-cards.hackclub.com/${encodeURIComponent(
         event.title
-      )}.png?brand=Events&caption=${encodeURIComponent(
+      )}.png?brand=Events&fontSize=225px&caption=${encodeURIComponent(
         `${event.leader} – ${fullDate(event)}`
       )}${event.amaAvatar && `&images=${event.amaAvatar}&theme=dark`}&images=${
         event.avatar
