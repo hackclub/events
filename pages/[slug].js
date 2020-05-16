@@ -170,7 +170,7 @@ export const getStaticPaths = async () => {
   const events = await getEvents()
   const slugs = map(events, 'slug')
   const paths = slugs.map((slug) => ({ params: { slug } }))
-  return { paths, fallback: false }
+  return { paths, fallback: true }
 }
 
 export const getStaticProps = async ({ params }) => {
