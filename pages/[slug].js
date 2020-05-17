@@ -14,7 +14,7 @@ import Head from 'next/head'
 import Meta from '../components/meta'
 import tt from 'tinytime'
 
-import RSVP from '../components/rsvp'
+// import RSVP from '../components/rsvp'
 import AMARsvp from '../components/ama-rsvp'
 
 const fullDate = event => tt('{MM} {DD}, {YYYY}').render(new Date(event.start))
@@ -116,7 +116,7 @@ export default ({ event }) => (
           <Calendar />
           Add to Google Calendar
         </Button>
-        {!event.ama && <RSVP {...event} />}
+        {/* !event.ama && <RSVP {...event} /> */}
       </Box>
     </Container>
     {event.ama && (
@@ -170,7 +170,7 @@ export const getStaticPaths = async () => {
   const events = await getEvents()
   const slugs = map(events, 'slug')
   const paths = slugs.map((slug) => ({ params: { slug } }))
-  return { paths, fallback: true }
+  return { paths, fallback: false }
 }
 
 export const getStaticProps = async ({ params }) => {
