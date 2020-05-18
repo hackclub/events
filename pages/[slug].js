@@ -1,5 +1,6 @@
 import {
   Avatar,
+  BaseStyles,
   Box,
   Button,
   Card,
@@ -26,14 +27,14 @@ export default ({ event }) => (
       title={event.title}
       description={`${event.ama ? 'An event hosted by' : 'An event by'} ${
         event.leader
-        } on ${fullDate(event)} at Hack Club.`}
+      } on ${fullDate(event)} at Hack Club.`}
       image={`https://workshop-cards.hackclub.com/${encodeURIComponent(
         event.title
       )}.png?brand=Events&fontSize=225px&caption=${encodeURIComponent(
         `${event.leader} – ${fullDate(event)}`
       )}${event.amaAvatar && `&images=${event.amaAvatar}&theme=dark`}&images=${
         event.avatar
-        }`}
+      }`}
     />
     <Box as="header" sx={{ bg: 'sheet' }}>
       <Container sx={{ textAlign: 'center', pt: [3, 4], pb: [3, 4] }}>
@@ -106,7 +107,11 @@ export default ({ event }) => (
           {tt('{h}:{mm} {a}').render(new Date(event.start))}–
           {tt('{h}:{mm} {a}').render(new Date(event.end))}
         </Text>
-        <Text sx={{ my: [2, 3], fontSize: [2, 3] }}>{event.desc}</Text>
+        <Box
+          as={BaseStyles}
+          sx={{ my: [2, 3], fontSize: [2, 3] }}
+          dangerouslySetInnerHTML={{ __html: event.html }}
+        />
         <Button
           as="a"
           target="_blank"
@@ -169,15 +174,17 @@ export const getStaticPaths = async () => {
   const { map } = require('lodash')
   const events = await getEvents()
   const slugs = map(events, 'slug')
-  const paths = slugs.map((slug) => ({ params: { slug } }))
+  const paths = slugs.map(slug => ({ params: { slug } }))
   return { paths, fallback: false }
 }
 
 export const getStaticProps = async ({ params }) => {
+  const md = require('@hackclub/markdown')
   const { slug } = params
   const { getEvents } = require('../lib/data')
   const { find } = require('lodash')
   const events = await getEvents()
   const event = find(events, { slug })
+  event.html = await md(event.desc)
   return { props: { event }, unstable_revalidate: 2 }
 }
