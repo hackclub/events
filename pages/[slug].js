@@ -14,11 +14,14 @@ import { Calendar, Twitch, Youtube } from 'react-feather'
 import Head from 'next/head'
 import Meta from '../components/meta'
 import tt from 'tinytime'
+import TwitchPlayer from 'react-player/twitch'
+import YouTubePlayer from 'react-player/youtube'
 
 // import RSVP from '../components/rsvp'
 import AMARsvp from '../components/ama-rsvp'
 
 const fullDate = event => tt('{MM} {DD}, {YYYY}').render(new Date(event.start))
+const past = dt => new Date(dt) < new Date()
 
 export default ({ event }) => (
   <>
@@ -80,16 +83,22 @@ export default ({ event }) => (
             fontWeight: 'bold',
             textAlign: 'center',
             border: '4px solid',
-            borderColor: 'primary',
+            borderColor: past(event.end) ? 'muted' : 'primary',
             width: [96, 128]
           }}
         >
-          <Box sx={{ bg: 'primary', color: 'white', fontSize: [2, 3] }}>
+          <Box
+            sx={{
+              bg: past(event.end) ? 'muted' : 'primary',
+              color: 'white',
+              fontSize: [2, 3]
+            }}
+          >
             {tt('{MM}').render(new Date(event.start))}
           </Box>
           <Box
             sx={{
-              color: 'text',
+              color: past(event.end) ? 'muted' : 'text',
               fontSize: [4, 5, 6],
               lineHeight: 'subheading'
             }}
@@ -112,60 +121,126 @@ export default ({ event }) => (
           sx={{ my: [2, 3], fontSize: [2, 3] }}
           dangerouslySetInnerHTML={{ __html: event.html }}
         />
-        <Button
-          as="a"
-          target="_blank"
-          href={event.cal}
-          sx={{ bg: 'cyan', mb: [3, 4] }}
-        >
-          <Calendar />
-          Add to Google Calendar
-        </Button>
+        {!past(event.start) && (
+          <Button
+            as="a"
+            target="_blank"
+            href={event.cal}
+            sx={{ bg: 'cyan', mb: [3, 4] }}
+          >
+            <Calendar />
+            Add to Google Calendar
+          </Button>
+        )}
         {/* !event.ama && <RSVP {...event} /> */}
       </Box>
     </Container>
     {event.ama && (
-      <Box as="section" bg="sunken" py={[4, 5]}>
-        <Container
-          as="section"
-          sx={{
-            display: 'grid',
-            gridTemplateColumns: [null, 'repeat(2, 1fr)'],
-            gridGap: [3, 4],
-            maxWidth: 'copyPlus'
-          }}
-        >
-          <AMARsvp {...event} />
-          <Card>
-            <Heading as="h2" variant="headline" mt={0}>
-              Not part of the{' '}
-              <Link href="https://hackclub.com/">Hack&nbsp;Club</Link> Slack?
-            </Heading>
-            <Text variant="subtitle" mb={[3, 4]}>
-              We’ll livestream the event on Twitch & YouTube.
-            </Text>
-            <Button
-              as="a"
-              target="_blank"
-              href="https://www.twitch.tv/HackClubHQ"
-              sx={{ bg: '#9147ff', color: 'white', mr: 3, mb: [3, 4] }}
-            >
-              <Twitch />
-              Follow on Twitch
-            </Button>
-            <Button
-              as="a"
-              target="_blank"
-              href="https://www.youtube.com/channel/UCQzO0jpcRkP-9eWKMpJyB0w"
-              sx={{ bg: 'red', color: 'white', mb: [3, 4] }}
-            >
-              <Youtube />
-              Subscribe on YouTube
-            </Button>
-          </Card>
-        </Container>
+      <Box
+        as="section"
+        sx={
+          past(event.start)
+            ? {
+                bg: !past(event.end) || event.youtube ? 'dark' : 'background',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center'
+              }
+            : { bg: 'sunken' }
+        }
+        py={[4, 5]}
+      >
+        {past(event.start) || event.youtube ? (
+          <>
+            {past(event.end) && event.youtube && (
+              <Embed>
+                <YouTubePlayer url={event.youtube} />
+              </Embed>
+            )}
+            {!past(event.end) && (
+              <Embed>
+                <TwitchPlayer url="https://twitch.tv/HackClubHQ" />
+              </Embed>
+            )}
+            <Flex sx={{ justifyContent: 'center', px: 3, mt: [3, 4] }}>
+              <Subscribe />
+            </Flex>
+          </>
+        ) : null}
+        {!past(event.start) && (
+          <Container
+            as="section"
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: [null, 'repeat(2, 1fr)'],
+              gridGap: [3, 4],
+              maxWidth: 'copyPlus'
+            }}
+          >
+            <AMARsvp {...event} />
+            <Card>
+              <Heading as="h2" variant="headline" mt={0}>
+                Not part of the{' '}
+                <Link href="https://hackclub.com/">Hack&nbsp;Club</Link> Slack?
+              </Heading>
+              <Text variant="subtitle" mb={[3, 4]}>
+                We’ll livestream the event on Twitch & YouTube.
+              </Text>
+              <Subscribe />
+            </Card>
+          </Container>
+        )}
       </Box>
     )}
+  </>
+)
+
+const Embed = props => (
+  <Box
+    {...props}
+    sx={{
+      width: '100%',
+      maxWidth: 'layout',
+      height: 0,
+      paddingBottom: 100 / (16 / 9) + '%',
+      position: 'relative',
+      overflow: 'hidden',
+      borderRadius: 'extra',
+      boxShadow: 'card',
+      px: 3,
+      iframe: {
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        border: 0
+      }
+    }}
+  />
+)
+
+const Subscribe = () => (
+  <>
+    <Button
+      as="a"
+      target="_blank"
+      href="https://www.twitch.tv/HackClubHQ"
+      sx={{ bg: '#9147ff', color: 'white', mr: 3, mb: [3, 4] }}
+    >
+      <Twitch />
+      Follow on Twitch
+    </Button>
+    <Button
+      as="a"
+      target="_blank"
+      href="https://www.youtube.com/channel/UCQzO0jpcRkP-9eWKMpJyB0w"
+      sx={{ bg: 'red', color: 'white', mb: [3, 4] }}
+    >
+      <Youtube />
+      Subscribe on YouTube
+    </Button>
   </>
 )
 
