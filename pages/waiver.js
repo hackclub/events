@@ -1,33 +1,39 @@
-import { Container, Text, Heading, Button } from 'theme-ui'
+import { Card, Container, Text, Heading, Button } from 'theme-ui'
 
-export default () => {
-  return (
-    <Container as="article" sx={{ mt: 4 }} variant="copy">
-      <Heading as="h1" variant="title">
-        Thanks for RSVPing!
-      </Heading>
-      <Heading as="h2" sx={{ mb: 4 }} variant="subtitle">
-        We’re really excited to have you.
-      </Heading>
+export default () => (
+  <Card
+    as="article"
+    sx={{ my: 4, textAlign: 'center', variant: 'layout.copy' }}
+  >
+    <Heading as="h1" variant="title" color="red">
+      Thanks for RSVPing!
+    </Heading>
 
-      <Text sx={{ fontSize: 2, mb: 2 }}>
-        Since we livestream AMA calls publicly, we’ll need you to fill out a
-        waiver first. Please make sure to use the same email address that you
-        filled out the RSVP with.
-      </Text>
+    <Text as="p" variant="subtitle" mt={2}>
+      We’re really excited to have you.
+    </Text>
 
-      <Button
-        as="a"
-        target="_blank"
-        href="https://hack.af/ama-waiver-u18"
-        mr={3}
-      >
-        Waiver: Under 18
-      </Button>
+    <Text sx={{ fontSize: 2, my: 4 }}>
+      Since we livestream AMAs publicly, we’ll need you to fill out a waiver.
+      Make&nbsp;sure to use the same email address you filled out the RSVP with.
+    </Text>
 
-      <Button as="a" target="_blank" href="https://hack.af/ama-waiver-o18">
-        Waiver: Over 18
-      </Button>
-    </Container>
-  )
-}
+    <Heading as="h2" variant="headline">
+      Sign your waiver
+    </Heading>
+
+    <Button
+      as="a"
+      target="_blank"
+      href="https://hack.af/ama-waiver-u18"
+      bg="accent"
+      mr={3}
+    >
+      I’m under 18
+    </Button>
+
+    <Button as="a" target="_blank" href="https://hack.af/ama-waiver-o18">
+      I’m over 18
+    </Button>
+  </Card>
+)
