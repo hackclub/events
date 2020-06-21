@@ -8,9 +8,11 @@ import {
   Flex,
   Heading,
   Link,
+  Spinner,
   Text
 } from 'theme-ui'
 import { Calendar, Twitch, Youtube } from 'react-feather'
+import { useRouter } from 'next/router'
 import Head from 'next/head'
 import Meta from '@hackclub/meta'
 import tt from 'tinytime'
@@ -23,13 +25,13 @@ import AMARsvp from '../components/ama-rsvp'
 const fullDate = event => tt('{MM} {DD}, {YYYY}').render(new Date(event.start))
 const past = dt => new Date(dt) < new Date()
 
-export default ({ event }) => (
+const Page = ({ event }) => (
   <>
     <Meta
       as={Head}
       name="Hack Club Events"
       title={event.title}
-      description={`${event.ama ? 'An event hosted by' : 'An event by'} ${
+      description={`${event.ama ? 'An AMA hosted by' : 'An event by'} ${
         event.leader
       } on ${fullDate(event)} at Hack Club.`}
       image={`https://workshop-cards.hackclub.com/${encodeURIComponent(
@@ -108,7 +110,7 @@ export default ({ event }) => (
           </Box>
         </Box>
         {event.amaAvatar && (
-          <Avatar size={128} sx={{ mt: 4 }} src={event.amaAvatar}></Avatar>
+          <Avatar size={128} sx={{ mt: 4 }} src={event.amaAvatar} />
         )}
       </Box>
       <Box as="article">
@@ -153,11 +155,12 @@ export default ({ event }) => (
       >
         {past(event.start) || event.youtube ? (
           <>
-            {past(event.end) && event.youtube && (
-              <Embed>
-                <YouTubePlayer url={event.youtube} />
-              </Embed>
-            )}
+            {past(event.end) &&
+              event.youtube && (
+                <Embed>
+                  <YouTubePlayer url={event.youtube} />
+                </Embed>
+              )}
             {!past(event.end) && (
               <Embed>
                 <TwitchPlayer url="https://twitch.tv/HackClubHQ" />
@@ -245,13 +248,27 @@ const Subscribe = () => (
   </>
 )
 
+export default props => {
+  const router = useRouter()
+
+  if (router.isFallback) {
+    return (
+      <Box sx={{ textAlign: 'center', py: 5 }}>
+        <Spinner size={64} color="primary" />
+      </Box>
+    )
+  } else {
+    return <Page {...props} />
+  }
+}
+
 export const getStaticPaths = async () => {
   const { getEvents } = require('../lib/data')
   const { map } = require('lodash')
   const events = await getEvents()
   const slugs = map(events, 'slug')
   const paths = slugs.map(slug => ({ params: { slug } }))
-  return { paths, fallback: false }
+  return { paths, fallback: true }
 }
 
 export const getStaticProps = async ({ params }) => {
