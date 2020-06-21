@@ -1,6 +1,6 @@
 {
-  "version": 2,
   "public": true,
+  "trailingSlash": true,
   "headers": [
     {
       "source": "/api/(.*)",
