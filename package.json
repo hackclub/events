@@ -13,7 +13,7 @@
     "@hackclub/markdown": "^0.0.1-alpha.0",
     "@hackclub/meta": "^1.0.0",
     "@hackclub/theme": "^0.1.1",
-    "@mdx-js/loader": "^1.6.5",
+    "@mdx-js/loader": "^1.6.6",
     "@next/mdx": "^9.4.4",
     "airtable-plus": "^1.0.4",
     "date-fns": "^2.14.0",
@@ -25,7 +25,7 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-feather": "^2.0.8",
-    "react-player": "^2.2.0",
+    "react-player": "^2.3.1",
     "theme-ui": "^0.3.1",
     "tinytime": "^0.2.6"
   }

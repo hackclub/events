@@ -12,7 +12,7 @@ import {
 } from 'theme-ui'
 import { Calendar, Twitch, Youtube } from 'react-feather'
 import Head from 'next/head'
-import Meta from '../components/meta'
+import Meta from '@hackclub/meta'
 import tt from 'tinytime'
 import TwitchPlayer from 'react-player/twitch'
 import YouTubePlayer from 'react-player/youtube'
@@ -27,6 +27,7 @@ export default ({ event }) => (
   <>
     <Meta
       as={Head}
+      name="Hack Club Events"
       title={event.title}
       description={`${event.ama ? 'An event hosted by' : 'An event by'} ${
         event.leader
