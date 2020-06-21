@@ -4,10 +4,19 @@ import Event from './event'
 
 export default ({ month, events }) => (
   <>
-    <Heading variant="headline" sx={{ color: 'accent', mt: [3, 4] }}>
+    <Heading variant="headline" sx={{ color: 'accent', px: 3, mt: [3, 4] }}>
       {format(new Date(`${month}-02`), 'MMMM yyyy')}
     </Heading>
-    <Grid columns={[2, 3, 4]} gap={[3, 4]} sx={{ mb: [3, 4, 5] }}>
+    <Grid
+      columns={[2, 3, 4]}
+      gap="1px"
+      sx={{
+        bg: 'sunken',
+        borderRadius: 'extra',
+        overflow: 'hidden',
+        mb: [3, 4, 5]
+      }}
+    >
       {events.map(event => (
         <Event {...event} key={event.id} />
       ))}

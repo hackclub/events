@@ -1,4 +1,4 @@
-import { Container, Box, Text, Heading, Button } from 'theme-ui'
+import { Container, Box, Text, Heading, Button, Link as A } from 'theme-ui'
 import Link from 'next/link'
 import Month from '../components/month'
 import { SkipBack } from 'react-feather'
@@ -9,18 +9,21 @@ export default ({ months }) => (
       as="header"
       sx={{
         bg: 'sheet',
-        color: 'primary',
         textAlign: 'center',
-        py: [3, 4],
         px: 3,
+        pb: [3, 4],
         mb: [3, 4]
       }}
     >
-      <Heading as="h1" variant="title">
+      <Heading as="h1" variant="title" color="primary" mb={2}>
         Hack Club Events
       </Heading>
+      <Text as="p" variant="subtitle">
+        AMAs, show & tells, & weekly fun in the{' '}
+        <A href="https://hackclub.com/">Hack Club</A> community.
+      </Text>
     </Box>
-    <Container>
+    <Container px={0}>
       {Object.keys(months).map(key => (
         <Month key={key} month={key} events={months[key]} />
       ))}
