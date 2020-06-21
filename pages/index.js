@@ -21,7 +21,7 @@ export default ({ months }) => (
       </Heading>
     </Box>
     <Container>
-      {Object.keys(months).map((key) => (
+      {Object.keys(months).map(key => (
         <Month key={key} month={key} events={months[key]} />
       ))}
       <Box as="section" sx={{ textAlign: 'center', pb: [3, 4] }}>
@@ -47,10 +47,10 @@ export const getStaticProps = async () => {
   // Filter out events from previous months
   events = filter(
     events,
-    (e) =>
+    e =>
       new Date(new Date(e.end.substring(0, 7)).toISOString().substring(0, 7)) >=
       new Date(new Date().toISOString().substring(0, 7))
   )
-  const months = groupBy(events, (e) => e.start.substring(0, 7))
-  return { props: { months }, unstable_revalidate: 5 }
+  const months = groupBy(events, e => e.start.substring(0, 7))
+  return { props: { months }, unstable_revalidate: 1 }
 }

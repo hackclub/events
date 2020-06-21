@@ -18,7 +18,7 @@ import Router from 'next/router'
 const AMARsvp = ({ id, amaId }) => {
   const { status, formProps, useField } = useForm(
     '/api/ama-rsvp',
-    (r) => {
+    r => {
       if (!r.waiver) {
         Router.push('/waiver')
       }

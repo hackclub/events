@@ -49,7 +49,7 @@ const Flag = () => (
   </A>
 )
 
-const ColorSwitcher = (props) => {
+const ColorSwitcher = props => {
   const [mode, setMode] = useColorMode()
   return (
     <NavButton

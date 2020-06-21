@@ -8,7 +8,7 @@ export default ({ month, events }) => (
       {format(new Date(`${month}-02`), 'MMMM yyyy')}
     </Heading>
     <Grid columns={[2, 3, 4]} gap={[3, 4]} sx={{ mb: [3, 4, 5] }}>
-      {events.map((event) => (
+      {events.map(event => (
         <Event {...event} key={event.id} />
       ))}
     </Grid>

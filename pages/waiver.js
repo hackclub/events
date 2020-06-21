@@ -12,7 +12,8 @@ export default () => {
 
       <Text sx={{ fontSize: 2, mb: 2 }}>
         Since we livestream AMA calls publicly, we’ll need you to fill out a
-        waiver first. Please make sure to use the same email address that you filled out the RSVP with.
+        waiver first. Please make sure to use the same email address that you
+        filled out the RSVP with.
       </Text>
 
       <Button
