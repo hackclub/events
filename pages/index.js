@@ -22,6 +22,9 @@ export default ({ months }) => (
         AMAs, show & tells, & weekly fun in the{' '}
         <A href="https://hackclub.com/">Hack Club</A> community.
       </Text>
+      <Text as="p" variant="subtitle">
+        All dates/times in your local time.
+      </Text>
     </Box>
     <Container px={0}>
       {Object.keys(months).map(key => (
