@@ -8,6 +8,7 @@ import '@hackclub/theme/fonts/reg-bold.css'
 import theme from '@hackclub/theme'
 import { ThemeProvider } from 'theme-ui'
 import * as Fathom from 'fathom-client'
+import Nav from '../components/nav'
 
 const App = ({ Component, pageProps }) => {
   const router = useRouter()
@@ -30,6 +31,7 @@ const App = ({ Component, pageProps }) => {
         description="See the upcoming events from the Hack Club high school coding community: AMAs, CTFs, fireside chats, live coding sessions, & lots more."
         image="https://events.hackclub.com/card.png"
       />
+      <Nav />
       <Component {...pageProps} />
     </ThemeProvider>
   )
