@@ -1,7 +1,7 @@
 import { Container, Box, Text, Heading, Button, Link as A } from 'theme-ui'
 import Link from 'next/link'
 import Month from '../components/month'
-import { SkipBack } from 'react-feather'
+import { Activity, SkipBack } from 'react-feather'
 
 export default ({ months }) => (
   <>
@@ -26,19 +26,28 @@ export default ({ months }) => (
         All dates/times in your local time.
       </Text>
     </Box>
-    <Container px={0}>
+    <Container as="main" px={0}>
       {Object.keys(months).map(key => (
         <Month key={key} month={key} events={months[key]} />
       ))}
-      <Box as="section" sx={{ textAlign: 'center', pb: [3, 4] }}>
+      <Box
+        as="footer"
+        sx={{
+          textAlign: 'center',
+          pb: [4, 5],
+          a: { variant: 'buttons.outline', color: 'secondary', mx: 2 }
+        }}
+      >
         <Link href="/past" passHref>
-          <Button
-            as="a"
-            variant="outline"
-            sx={{ display: 'inline-flex', alignItems: 'center' }}
-          >
+          <Button as="a" variant="outline">
             <SkipBack />
             View past events
+          </Button>
+        </Link>
+        <Link href="/data" passHref>
+          <Button as="a">
+            <Activity />
+            Events API
           </Button>
         </Link>
       </Box>
