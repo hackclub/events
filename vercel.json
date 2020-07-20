@@ -3,7 +3,7 @@
   "rewrites": [
     {
       "source": "/arts-gala",
-      "destination": "https://arts-gala.hackclub.dev"
+      "destination": "https://arts-gala.hackclub.dev/"
     },
     {
       "source": "/arts-gala/_next/:path*",
