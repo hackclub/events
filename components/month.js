@@ -17,7 +17,7 @@ export default ({ month, events }) => (
         mb: [3, 4, 5]
       }}
     >
-      {events.map(event => (
+      {events.map((event) => (
         <Event {...event} key={event.id} />
       ))}
     </Grid>

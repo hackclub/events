@@ -2,7 +2,7 @@ import { Card, Box, Text, Flex, Avatar, Heading } from 'theme-ui'
 import tt from 'tinytime'
 import Link from 'next/link'
 
-const past = dt => new Date(dt) < new Date()
+const past = (dt) => new Date(dt) < new Date()
 
 const Event = ({ id, slug, title, desc, leader, avatar, start, end, cal }) => (
   <Link href="/[slug]" as={`/${slug}`} passHref>

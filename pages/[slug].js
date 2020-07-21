@@ -22,8 +22,9 @@ import YouTubePlayer from 'react-player/youtube'
 // import RSVP from '../components/rsvp'
 import AMARsvp from '../components/ama-rsvp'
 
-const fullDate = event => tt('{MM} {DD}, {YYYY}').render(new Date(event.start))
-const past = dt => new Date(dt) < new Date()
+const fullDate = (event) =>
+  tt('{MM} {DD}, {YYYY}').render(new Date(event.start))
+const past = (dt) => new Date(dt) < new Date()
 
 const Page = ({ event }) => (
   <>
@@ -155,12 +156,11 @@ const Page = ({ event }) => (
       >
         {past(event.start) || event.youtube ? (
           <>
-            {past(event.end) &&
-              event.youtube && (
-                <Embed>
-                  <YouTubePlayer url={event.youtube} />
-                </Embed>
-              )}
+            {past(event.end) && event.youtube && (
+              <Embed>
+                <YouTubePlayer url={event.youtube} />
+              </Embed>
+            )}
             {!past(event.end) && (
               <Embed>
                 <TwitchPlayer url="https://twitch.tv/HackClubHQ" />
@@ -199,7 +199,7 @@ const Page = ({ event }) => (
   </>
 )
 
-const Embed = props => (
+const Embed = (props) => (
   <Box
     {...props}
     sx={{
@@ -248,7 +248,7 @@ const Subscribe = () => (
   </>
 )
 
-export default props => {
+export default (props) => {
   const router = useRouter()
 
   if (router.isFallback) {
@@ -267,7 +267,7 @@ export const getStaticPaths = async () => {
   const { map } = require('lodash')
   const events = await getEvents()
   const slugs = map(events, 'slug')
-  const paths = slugs.map(slug => ({ params: { slug } }))
+  const paths = slugs.map((slug) => ({ params: { slug } }))
   return { paths, fallback: true }
 }
 

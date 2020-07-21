@@ -6,10 +6,10 @@ export default async (req, res) => {
   // Filter out events from previous months
   events = filter(
     events,
-    e =>
+    (e) =>
       new Date(new Date(e.end.substring(0, 7)).toISOString().substring(0, 7)) >=
       new Date(new Date().toISOString().substring(0, 7))
   )
-  const months = groupBy(events, e => e.start.substring(0, 7))
+  const months = groupBy(events, (e) => e.start.substring(0, 7))
   res.json(months)
 }
