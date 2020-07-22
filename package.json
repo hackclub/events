@@ -13,7 +13,7 @@
     "@hackclub/markdown": "^0.0.1-alpha.0",
     "@hackclub/meta": "^1.0.0",
     "@hackclub/theme": "^0.2.0",
-    "@mdx-js/loader": "^1.6.11",
+    "@mdx-js/loader": "^1.6.13",
     "@next/mdx": "^9.4.4",
     "airtable-plus": "^1.0.4",
     "date-fns": "^2.15.0",
