@@ -1,4 +1,4 @@
-const { getEvents } = require('../../../lib/data')
+const { getEvents } = require('../../lib/data')
 const { filter } = require('lodash')
 
 export default async (req, res) => {
