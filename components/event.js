@@ -5,7 +5,7 @@ import Link from 'next/link'
 const past = dt => new Date(dt) < new Date()
 
 const Event = ({ id, slug, title, desc, leader, avatar, start, end, cal }) => (
-  <Link href="/[slug]" as={`/${slug}`} passHref>
+  <Link href="/[slug]" as={`/${slug}`} prefetch={!past(start)} passHref>
     <Box
       as="a"
       sx={{ textDecoration: 'none', bg: 'elevated', color: 'text', p: [3, 3] }}
