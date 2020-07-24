@@ -155,12 +155,11 @@ const Page = ({ event }) => (
       >
         {past(event.start) || event.youtube ? (
           <>
-            {past(event.end) &&
-              event.youtube && (
-                <Embed>
-                  <YouTubePlayer url={event.youtube} />
-                </Embed>
-              )}
+            {past(event.end) && event.youtube && (
+              <Embed>
+                <YouTubePlayer url={event.youtube} />
+              </Embed>
+            )}
             {!past(event.end) && (
               <Embed>
                 <TwitchPlayer url="https://twitch.tv/HackClubHQ" />
