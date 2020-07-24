@@ -14,7 +14,10 @@ const App = ({ Component, pageProps }) => {
   const router = useRouter()
 
   useEffect(() => {
-    Fathom.load('ESMSQSYP', { includedDomains: ['events.hackclub.com'] })
+    Fathom.load('ESMSQSYP', {
+      includedDomains: ['events.hackclub.com'],
+      url: 'https://aardvark.hackclub.com/script.js'
+    })
     const onRouteChangeComplete = () => Fathom.trackPageview()
     router.events.on('routeChangeComplete', onRouteChangeComplete)
     return () => {

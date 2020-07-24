@@ -155,12 +155,11 @@ const Page = ({ event }) => (
       >
         {past(event.start) || event.youtube ? (
           <>
-            {past(event.end) &&
-              event.youtube && (
-                <Embed>
-                  <YouTubePlayer url={event.youtube} />
-                </Embed>
-              )}
+            {past(event.end) && event.youtube && (
+              <Embed>
+                <YouTubePlayer url={event.youtube} />
+              </Embed>
+            )}
             {!past(event.end) && (
               <Embed>
                 <TwitchPlayer url="https://twitch.tv/HackClubHQ" />
@@ -274,6 +273,7 @@ export const getStaticPaths = async () => {
 export const getStaticProps = async ({ params }) => {
   const md = require('@hackclub/markdown')
   const { slug } = params
+  console.log(slug)
   const { getEvents } = require('../lib/data')
   const { find } = require('lodash')
   const events = await getEvents()
