@@ -273,7 +273,6 @@ export const getStaticPaths = async () => {
 export const getStaticProps = async ({ params }) => {
   const md = require('@hackclub/markdown')
   const { slug } = params
-  console.log(slug)
   const { getEvents } = require('../lib/data')
   const { find } = require('lodash')
   const events = await getEvents()
