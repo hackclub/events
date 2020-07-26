@@ -22,7 +22,7 @@ export default ({ months }) => (
         AMAs, show & tells, & weekly fun in the{' '}
         <A href="https://hackclub.com/">Hack Club</A> community.
       </Text>
-      <Text as="p" variant="subtitle">
+      <Text as="p" variant="subtitle" mt={2}>
         All dates/times in your local time.
       </Text>
     </Box>

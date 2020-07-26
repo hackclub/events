@@ -14,6 +14,7 @@ export default ({ month, events }) => (
         bg: 'sunken',
         borderRadius: 'extra',
         overflow: 'hidden',
+        boxShadow: 'elevated',
         mb: [3, 4, 5]
       }}
     >
