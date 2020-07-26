@@ -1,14 +1,23 @@
 import { Card, Box, Text, Flex, Avatar, Heading } from 'theme-ui'
 import tt from 'tinytime'
 import Link from 'next/link'
+import Sparkles from './sparkles'
 
 const past = dt => new Date(dt) < new Date()
+const now = (start, end) =>
+  new Date() > new Date(start) && new Date() < new Date(end)
 
 const Event = ({ id, slug, title, desc, leader, avatar, start, end, cal }) => (
   <Link href="/[slug]" as={`/${slug}`} passHref>
     <Box
       as="a"
-      sx={{ textDecoration: 'none', bg: 'elevated', color: 'text', p: [3, 3] }}
+      sx={{
+        position: 'relative',
+        textDecoration: 'none',
+        bg: 'elevated',
+        color: 'text',
+        p: [3, 3]
+      }}
     >
       <Box
         sx={{
@@ -37,6 +46,7 @@ const Event = ({ id, slug, title, desc, leader, avatar, start, end, cal }) => (
           color: 'muted'
         }}
       >
+        {now(start, end)}
         {!avatar.includes('emoji') && (
           <Avatar
             src={avatar}
@@ -47,6 +57,19 @@ const Event = ({ id, slug, title, desc, leader, avatar, start, end, cal }) => (
         )}
         <Text as="span">{leader}</Text>
       </Flex>
+      {now(start, end) && (
+        <Sparkles
+          aria-hidden
+          style={{
+            pointerEvents: 'none',
+            position: 'absolute !important',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0
+          }}
+        />
+      )}
     </Box>
   </Link>
 )
