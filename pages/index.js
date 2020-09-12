@@ -30,6 +30,11 @@ export default ({ months }) => (
       {Object.keys(months).map(key => (
         <Month key={key} month={key} events={months[key]} />
       ))}
+      {Object.keys(months).length== 0 && (
+        <Box sx={{ textAlign: 'center' }}>
+          <h1 sx={{ fontWeight: '400' }}>🚧 More events coming soon.</h1>
+        </Box>
+      )}
       <Box
         as="footer"
         sx={{
