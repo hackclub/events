@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { Button, Card, Grid, Heading, Input, Label, Text } from 'theme-ui'
-import fetch from 'isomorphic-unfetch'
 
 const RSVP = ({ id }) => {
   const [phone, setPhone] = useState('')

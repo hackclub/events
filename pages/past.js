@@ -38,5 +38,5 @@ export const getStaticProps = async () => {
       new Date(new Date().toISOString().substring(0, 7))
   )
   const months = groupBy(events, e => e.start.substring(0, 7))
-  return { props: { months }, unstable_revalidate: 5 }
+  return { props: { months }, revalidate: 5 }
 }

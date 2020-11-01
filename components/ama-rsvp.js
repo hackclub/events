@@ -13,7 +13,6 @@ import {
   Link
 } from 'theme-ui'
 import useForm from '../hooks/use-form'
-import fetch from 'isomorphic-unfetch'
 import Router from 'next/router'
 
 const AMARsvp = ({ id, amaId }) => {

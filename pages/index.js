@@ -63,5 +63,5 @@ export default ({ months }) => (
 export const getStaticProps = async () => {
   const { getUpcomingMonthly } = require('./api/events/upcoming-monthly')
   const months = await getUpcomingMonthly()
-  return { props: { months }, unstable_revalidate: 1 }
+  return { props: { months }, revalidate: 1 }
 }
