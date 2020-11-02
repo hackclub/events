@@ -11,12 +11,11 @@ import {
   Spinner,
   Text
 } from 'theme-ui'
-import { Calendar, Twitch, Youtube } from 'react-feather'
+import { Calendar, Youtube } from 'react-feather'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 import Meta from '@hackclub/meta'
 import tt from 'tinytime'
-import TwitchPlayer from 'react-player/twitch'
 import YouTubePlayer from 'react-player/youtube'
 
 // import RSVP from '../components/rsvp'
@@ -144,7 +143,7 @@ const Page = ({ event }) => (
         sx={
           past(event.start)
             ? {
-                bg: !past(event.end) || event.youtube ? 'dark' : 'background',
+                bg: event.youtube ? 'dark' : 'background',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center'
@@ -155,14 +154,9 @@ const Page = ({ event }) => (
       >
         {past(event.start) || event.youtube ? (
           <>
-            {past(event.end) && event.youtube && (
+            {event.youtube && (
               <Embed>
                 <YouTubePlayer url={event.youtube} />
-              </Embed>
-            )}
-            {!past(event.end) && (
-              <Embed>
-                <TwitchPlayer url="https://twitch.tv/HackClubHQ" />
               </Embed>
             )}
             <Flex sx={{ justifyContent: 'center', px: 3, mt: [3, 4] }}>
@@ -187,7 +181,7 @@ const Page = ({ event }) => (
                 <Link href="https://hackclub.com/">Hack&nbsp;Club</Link> Slack?
               </Heading>
               <Text variant="subtitle" mb={[3, 4]}>
-                We’ll livestream the event on Twitch & YouTube.
+                We’ll post the event recording to YouTube.
               </Text>
               <Subscribe />
             </Card>
@@ -225,26 +219,15 @@ const Embed = props => (
 )
 
 const Subscribe = () => (
-  <>
-    <Button
-      as="a"
-      target="_blank"
-      href="https://www.twitch.tv/HackClubHQ"
-      sx={{ bg: '#9147ff', color: 'white', mr: 3, mb: [3, 4] }}
-    >
-      <Twitch />
-      Follow on Twitch
-    </Button>
-    <Button
-      as="a"
-      target="_blank"
-      href="https://www.youtube.com/hackclubhq"
-      sx={{ bg: 'red', color: 'white', mb: [3, 4] }}
-    >
-      <Youtube />
-      Subscribe on YouTube
-    </Button>
-  </>
+  <Button
+    as="a"
+    target="_blank"
+    href="https://www.youtube.com/hackclubhq"
+    sx={{ bg: 'red', color: 'white', mb: [3, 4] }}
+  >
+    <Youtube />
+    Subscribe on YouTube
+  </Button>
 )
 
 export default props => {
