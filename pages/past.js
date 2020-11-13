@@ -19,9 +19,11 @@ export default ({ months }) => (
       </Heading>
     </Box>
     <Container>
-      {Object.keys(months).map(key => (
-        <Month key={key} month={key} events={months[key]} />
-      ))}
+      {Object.keys(months)
+        .reverse()
+        .map(key => (
+          <Month key={key} month={key} events={months[key]} />
+        ))}
     </Container>
   </>
 )
