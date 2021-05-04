@@ -169,13 +169,13 @@ const Page = ({ event }) => (
             as="section"
             sx={{
               display: 'grid',
-              gridTemplateColumns: [null, 'repeat(2, 1fr)'],
+              gridTemplateColumns: [null, event.amaForm ? 'repeat(2, 1fr)' : null],
               gridGap: [3, 4],
               maxWidth: 'copyPlus'
             }}
           >
             {event.amaForm ? <AMARsvp {...event} />  : ''}
-            <Card>
+            <Card sx={{margin: event.amaForm ? 'default' : 'auto'}}>
               <Heading as="h2" variant="headline" mt={0}>
                 Not part of the{' '}
                 <Link href="https://hackclub.com/">Hack&nbsp;Club</Link> Slack?
