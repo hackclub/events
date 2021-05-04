@@ -174,7 +174,7 @@ const Page = ({ event }) => (
               maxWidth: 'copyPlus'
             }}
           >
-            <AMARsvp {...event} />
+            {event.amaForm ? <AMARsvp {...event} />  : ''}
             <Card>
               <Heading as="h2" variant="headline" mt={0}>
                 Not part of the{' '}
