@@ -9,7 +9,7 @@ export default ({ month, events }) => (
     </Heading>
     <Grid
       columns={[2, 3, 4]}
-      gap="1px"
+      gap="0px"
       sx={{
         bg: 'sunken',
         borderRadius: 'extra',
@@ -18,8 +18,8 @@ export default ({ month, events }) => (
         mb: [3, 4, 5]
       }}
     >
-      {events.map(event => (
-        <Event {...event} key={event.id} />
+      {events.map((event, index) => (
+        <Event {...event} key={event.id} index={index} />
       ))}
     </Grid>
   </>
