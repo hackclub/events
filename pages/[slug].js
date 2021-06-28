@@ -76,47 +76,13 @@ const Page = ({ event }) => (
           margin: 'none',
           ml: '0px',
           gridGap: [3, 4],
-          gridTemplateColumns: [null, 'auto 1fr'],
+          gridTemplateColumns: [null, '1fr auto'],
           alignItems: 'start',
           py: [3, 4],
-          px:0
+          px: 0
         }}
       >
-        <Box as="aside">
-          <Box
-            sx={{
-              borderRadius: ['extra', 'ultra'],
-              fontWeight: 'bold',
-              textAlign: 'center',
-              border: '4px solid',
-              borderColor: 'sunken',
-              width: [96, 128]
-            }}
-          >
-            <Box
-              sx={{
-                bg: 'sunken',
-                color: 'white',
-                fontSize: [2, 3]
-              }}
-            >
-              {tt('{MM}').render(new Date(event.start))}
-            </Box>
-            <Box
-              sx={{
-                color: past(event.end) ? 'muted' : 'text',
-                fontSize: [4, 5, 6],
-                lineHeight: 'subheading'
-              }}
-            >
-              {tt('{DD}').render(new Date(event.start))}
-            </Box>
-          </Box>
-          {event.amaAvatar && (
-            <Avatar size={128} sx={{ mt: 4 }} src={event.amaAvatar} />
-          )}
-        </Box>
-        <Box as="article">
+        <Box as="article" sx={{ gridRow: [2, 1], gridColumn: 1 }}>
           <Text variant="caption">{fullDate(event)}</Text>
           <Text variant="subtitle">
             {tt('{h}:{mm} {a}').render(new Date(event.start))} –{' '}
@@ -140,23 +106,44 @@ const Page = ({ event }) => (
           )}
           {/* !event.ama && <RSVP {...event} /> */}
         </Box>
+        <Box>
+          <Box
+            sx={{
+              borderRadius: ['extra', 'ultra'],
+              fontWeight: 'bold',
+              textAlign: 'center',
+              border: '4px solid',
+              borderColor: 'sheet',
+              width: [96, 128]
+            }}
+          >
+            <Box
+              sx={{
+                bg: 'sheet',
+                color: 'white',
+                fontSize: [2, 3]
+              }}
+            >
+              {tt('{MM}').render(new Date(event.start))}
+            </Box>
+            <Box
+              sx={{
+                color: past(event.end) ? 'muted' : 'text',
+                fontSize: [4, 5, 6],
+                lineHeight: 'subheading'
+              }}
+            >
+              {tt('{DD}').render(new Date(event.start))}
+            </Box>
+          </Box>
+          {event.amaAvatar && (
+            <Avatar size={128} sx={{ mt: 4 }} src={event.amaAvatar} />
+          )}
+        </Box>
       </Container>
     </Container>
     {event.ama && (
-      <Box
-        as="section"
-        sx={
-          past(event.start)
-            ? {
-                bg: event.youtube ? 'dark' : 'background',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center'
-              }
-            : { bg: 'sunken' }
-        }
-        py={[4, 5]}
-      >
+      <Container as="section" py={[2, 2]}>
         {past(event.start) || event.youtube ? (
           <>
             {event.youtube && (
@@ -164,7 +151,7 @@ const Page = ({ event }) => (
                 <YouTubePlayer url={event.youtube} />
               </Embed>
             )}
-            <Flex sx={{ justifyContent: 'center', px: 3, mt: [3, 4] }}>
+            <Flex sx={{ justifyContent: 'left', mt: event.youtube ? [3, 4] : 0 }}>
               <Subscribe />
             </Flex>
           </>
@@ -195,7 +182,7 @@ const Page = ({ event }) => (
             </Card>
           </Container>
         )}
-      </Box>
+      </Container>
     )}
   </>
 )
