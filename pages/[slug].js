@@ -42,14 +42,14 @@ const Page = ({ event }) => (
       }`}
     />
     <Box as="header" sx={{ bg: 'sheet' }}>
-      <Container sx={{ textAlign: 'center', pt: [3, 4], pb: [3, 4] }}>
+      <Container sx={{ textAlign: 'left', pt: [3, 4], pb: [3, 4] }}>
         <Heading as="h1" variant="title" sx={{ mb: 2, color: 'white' }}>
           {event.title}
         </Heading>
         <Flex
           sx={{
             alignItems: 'center',
-            justifyContent: 'center',
+            justifyContent: 'left',
             color: 'muted',
             fontSize: 2
           }}
@@ -67,75 +67,80 @@ const Page = ({ event }) => (
         </Flex>
       </Container>
     </Box>
-    <Container
-      as="article"
-      sx={{
-        maxWidth: [null, 'copy', 'copyPlus'],
-        display: 'grid',
-        gridGap: [3, 4],
-        gridTemplateColumns: [null, 'auto 1fr'],
-        alignItems: 'start',
-        py: [3, 4]
-      }}
-    >
-      <Box as="aside">
-        <Box
-          sx={{
-            borderRadius: ['extra', 'ultra'],
-            fontWeight: 'bold',
-            textAlign: 'center',
-            border: '4px solid',
-            borderColor: past(event.end) ? 'muted' : 'primary',
-            width: [96, 128]
-          }}
-        >
+    <Container>
+      <Container
+        as="article"
+        sx={{
+          maxWidth: [null, 'copy', 'copyPlus'],
+          display: 'grid',
+          margin: 'none',
+          ml: '0px',
+          gridGap: [3, 4],
+          gridTemplateColumns: [null, 'auto 1fr'],
+          alignItems: 'start',
+          py: [3, 4],
+          px:0
+        }}
+      >
+        <Box as="aside">
           <Box
             sx={{
-              bg: past(event.end) ? 'muted' : 'primary',
-              color: 'white',
-              fontSize: [2, 3]
+              borderRadius: ['extra', 'ultra'],
+              fontWeight: 'bold',
+              textAlign: 'center',
+              border: '4px solid',
+              borderColor: 'sunken',
+              width: [96, 128]
             }}
           >
-            {tt('{MM}').render(new Date(event.start))}
+            <Box
+              sx={{
+                bg: 'sunken',
+                color: 'white',
+                fontSize: [2, 3]
+              }}
+            >
+              {tt('{MM}').render(new Date(event.start))}
+            </Box>
+            <Box
+              sx={{
+                color: past(event.end) ? 'muted' : 'text',
+                fontSize: [4, 5, 6],
+                lineHeight: 'subheading'
+              }}
+            >
+              {tt('{DD}').render(new Date(event.start))}
+            </Box>
           </Box>
-          <Box
-            sx={{
-              color: past(event.end) ? 'muted' : 'text',
-              fontSize: [4, 5, 6],
-              lineHeight: 'subheading'
-            }}
-          >
-            {tt('{DD}').render(new Date(event.start))}
-          </Box>
+          {event.amaAvatar && (
+            <Avatar size={128} sx={{ mt: 4 }} src={event.amaAvatar} />
+          )}
         </Box>
-        {event.amaAvatar && (
-          <Avatar size={128} sx={{ mt: 4 }} src={event.amaAvatar} />
-        )}
-      </Box>
-      <Box as="article">
-        <Text variant="caption">{fullDate(event)}</Text>
-        <Text variant="subtitle">
-          {tt('{h}:{mm} {a}').render(new Date(event.start))} –{' '}
-          {tt('{h}:{mm} {a}').render(new Date(event.end))}
-        </Text>
-        <Box
-          as={BaseStyles}
-          sx={{ my: [2, 3], fontSize: [2, 3] }}
-          dangerouslySetInnerHTML={{ __html: event.html }}
-        />
-        {!past(event.start) && (
-          <Button
-            as="a"
-            target="_blank"
-            href={event.cal}
-            sx={{ bg: 'cyan', mb: [3, 4] }}
-          >
-            <Calendar />
-            Add to Google Calendar
-          </Button>
-        )}
-        {/* !event.ama && <RSVP {...event} /> */}
-      </Box>
+        <Box as="article">
+          <Text variant="caption">{fullDate(event)}</Text>
+          <Text variant="subtitle">
+            {tt('{h}:{mm} {a}').render(new Date(event.start))} –{' '}
+            {tt('{h}:{mm} {a}').render(new Date(event.end))}
+          </Text>
+          <Box
+            as={BaseStyles}
+            sx={{ my: [2, 3], fontSize: [2, 3] }}
+            dangerouslySetInnerHTML={{ __html: event.html }}
+          />
+          {!past(event.start) && (
+            <Button
+              as="a"
+              target="_blank"
+              href={event.cal}
+              sx={{ bg: 'cyan', mb: [3, 4] }}
+            >
+              <Calendar />
+              Add to Google Calendar
+            </Button>
+          )}
+          {/* !event.ama && <RSVP {...event} /> */}
+        </Box>
+      </Container>
     </Container>
     {event.ama && (
       <Box
@@ -226,10 +231,12 @@ const Subscribe = () => (
     as="a"
     target="_blank"
     href="https://www.youtube.com/hackclubhq"
-    sx={{ bg: 'red', color: 'white', mb: [3, 4] }}
+    sx={{ bg: 'red', color: 'white', mb: [3, 4], display: 'flex' }}
   >
     <Youtube />
-    Subscribe on YouTube
+    <Text as="span" ml={2}>
+      Subscribe on YouTube
+    </Text>
   </Button>
 )
 
