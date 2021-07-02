@@ -14,6 +14,7 @@ const App = ({ Component, pageProps }) => (
       title="Events in the Wild West"
       description="See the upcoming events from the Hack Club high school coding community: AMAs, CTFs, fireside chats, live coding sessions, & lots more."
       image="https://events.hackclub.com/hc_events_wild_west.png"
+      color={theme.colors.sheet}
     />
     <Nav />
     <Component {...pageProps} />
