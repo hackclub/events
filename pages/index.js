@@ -20,7 +20,7 @@ export default function App({ months }) {
           Hack Club in the Wild West
         </Heading>
         <Text as="p" variant="subtitle">
-          AMAs, show & tells, & weekly fun in the{' '}
+          All the weekly fun in the{' '}
           <A href="https://hackclub.com/" sx={{ color: 'white' }}>
             Hack Club
           </A>{' '}
