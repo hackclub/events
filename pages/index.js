@@ -17,7 +17,7 @@ export default function App({ months }) {
         }}
       >
         <Heading as="h1" variant="title" color="primary" mb={2} sx={{ color: 'white'}}>
-          Hack Club in the Wild West
+          Hack Club Events
         </Heading>
         <Text as="p" variant="subtitle">
           AMAs, show & tells, & weekly fun in the{' '}
