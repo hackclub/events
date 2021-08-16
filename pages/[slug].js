@@ -43,7 +43,7 @@ const Page = ({ event }) => (
     />
     <Box as="header" sx={{ bg: 'sheet' }}>
       <Container sx={{ textAlign: 'center', pt: [3, 4], pb: [3, 4] }}>
-        <Heading as="h1" variant="title" sx={{ mb: 2, color: 'white' }}>
+        <Heading as="h1" variant="title" sx={{ mb: 2 }}>
           {event.title}
         </Heading>
         <Flex
@@ -115,7 +115,7 @@ const Page = ({ event }) => (
       <Box as="article">
         <Text variant="caption">{fullDate(event)}</Text>
         <Text variant="subtitle">
-          {tt('{h}:{mm} {a}').render(new Date(event.start))} –{' '}
+          {tt('{h}:{mm} {a}').render(new Date(event.start))}–
           {tt('{h}:{mm} {a}').render(new Date(event.end))}
         </Text>
         <Box
@@ -169,16 +169,13 @@ const Page = ({ event }) => (
             as="section"
             sx={{
               display: 'grid',
-              gridTemplateColumns: [
-                null,
-                event.amaForm ? 'repeat(2, 1fr)' : null
-              ],
+              gridTemplateColumns: [null, event.amaForm ? 'repeat(2, 1fr)' : null],
               gridGap: [3, 4],
               maxWidth: 'copyPlus'
             }}
           >
-            {event.amaForm ? <AMARsvp {...event} /> : ''}
-            <Card sx={{ margin: event.amaForm ? 'default' : 'auto' }}>
+            {event.amaForm ? <AMARsvp {...event} />  : ''}
+            <Card sx={{margin: event.amaForm ? 'default' : 'auto'}}>
               <Heading as="h2" variant="headline" mt={0}>
                 Not part of the{' '}
                 <Link href="https://hackclub.com/">Hack&nbsp;Club</Link> Slack?
@@ -233,7 +230,7 @@ const Subscribe = () => (
   </Button>
 )
 
-export default function App(props) {
+export default props => {
   const router = useRouter()
 
   if (router.isFallback) {
