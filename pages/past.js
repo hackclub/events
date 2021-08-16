@@ -1,36 +1,32 @@
 import { Container, Box, Heading } from 'theme-ui'
 import Month from '../components/month'
 
-export default function App({ months }) {
-  return (
-    <>
-      <Box
-        as="header"
-        sx={{
-          bg: 'sheet',
-          color: 'white',
-          textAlign: 'left',
-          py: [3, 4],
-          px: 3,
-          mb: [3, 4]
-        }}
-      >
-        <Container>
-          <Heading as="h1" variant="title">
-            Past Events
-          </Heading>
-        </Container>
-      </Box>
-      <Container>
-        {Object.keys(months)
-          .reverse()
-          .map(key => (
-            <Month key={key} month={key} events={months[key]} />
-          ))}
-      </Container>
-    </>
-  )
-}
+export default ({ months }) => (
+  <>
+    <Box
+      as="header"
+      sx={{
+        bg: 'sheet',
+        color: 'primary',
+        textAlign: 'center',
+        py: [3, 4],
+        px: 3,
+        mb: [3, 4]
+      }}
+    >
+      <Heading as="h1" variant="title">
+        Past Events
+      </Heading>
+    </Box>
+    <Container>
+      {Object.keys(months)
+        .reverse()
+        .map(key => (
+          <Month key={key} month={key} events={months[key]} />
+        ))}
+    </Container>
+  </>
+)
 
 export const getStaticProps = async () => {
   const { getEvents } = require('../lib/data')

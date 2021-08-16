@@ -49,6 +49,18 @@ const Flag = () => (
   </A>
 )
 
+const ColorSwitcher = props => {
+  const [mode, setMode] = useColorMode()
+  return (
+    <NavButton
+      {...props}
+      onClick={() => setMode(mode === 'dark' ? 'light' : 'dark')}
+      title="Reverse color scheme"
+    >
+      <Moon size={24} />
+    </NavButton>
+  )
+}
 
 export default () => {
   const [mode] = useColorMode()
@@ -58,8 +70,8 @@ export default () => {
     <Box
       as="nav"
       sx={{
-        bg: '#c44d4d',
-        color: 'white',
+        bg: 'sheet',
+        color: 'nav',
         py: 3
       }}
     >
@@ -69,7 +81,7 @@ export default () => {
           alignItems: 'center',
           a: {
             fontSize: 1,
-            color: 'white',
+            color: 'primary',
             textDecoration: 'none',
             mr: [3, 4]
           }
@@ -84,6 +96,7 @@ export default () => {
         >
           <GitHub size={24} />
         </NavButton>
+        <ColorSwitcher />
       </Container>
     </Box>
   )

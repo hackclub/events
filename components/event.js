@@ -7,18 +7,7 @@ const past = dt => new Date(dt) < new Date()
 const now = (start, end) =>
   new Date() > new Date(start) && new Date() < new Date(end)
 
-const Event = ({
-  id,
-  slug,
-  title,
-  desc,
-  leader,
-  avatar,
-  start,
-  end,
-  cal,
-  index
-}) => (
+const Event = ({ id, slug, title, desc, leader, avatar, start, end, cal }) => (
   <Link href="/[slug]" as={`/${slug}`} passHref>
     <Box
       as="a"
@@ -27,23 +16,18 @@ const Event = ({
         textDecoration: 'none',
         bg: 'elevated',
         color: 'text',
-        p: [3, 3],
-        borderRight: [
-          index + 1 % 2 == 0 ? 'none' : '1px solid black',
-          index + 1 % 3 == 0 ? 'none' : '1px solid black',
-          (index + 1) % 4 == 0 ? 'none' : '1px solid black'
-        ]
+        p: [3, 3]
       }}
     >
       <Box
         sx={{
-          background: '#000',
+          bg: past(end) ? 'sunken' : 'primary',
           color: past(end) ? 'text' : 'white',
           lineHeight: ['subheading', 'body'],
           m: -3,
           py: 2,
           px: 3,
-          mb: 2,
+          mb: 3,
           strong: { display: ['block', 'inline'] }
         }}
       >
@@ -59,8 +43,7 @@ const Event = ({
       <Flex
         sx={{
           alignItems: 'center',
-          color: 'muted',
-          mt: 2
+          color: 'muted'
         }}
       >
         {now(start, end)}
