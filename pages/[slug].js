@@ -98,10 +98,10 @@ const Page = ({ event }) => (
               as="a"
               target="_blank"
               href={event.cal}
-              sx={{ bg: 'primary', mb: [3, 4], display: 'flex', width: 'max-content' }}
+              sx={{ bg: 'cyan', mb: [3, 4] }}
             >
               <Calendar />
-              <Text ml={2}>Add to Google Calendar</Text>
+              Add to Google Calendar
             </Button>
           )}
           {/* !event.ama && <RSVP {...event} /> */}
