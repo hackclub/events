@@ -1,4 +1,5 @@
 // Full credit to https://joshwcomeau.com/react/animated-sparkles-in-react/
+import React from 'react'
 import styled from '@emotion/styled'
 import { keyframes } from '@emotion/core'
 import { range, sample, random } from 'lodash'
