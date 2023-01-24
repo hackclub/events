@@ -24,7 +24,7 @@ Powered by [Next.js] with [MDX], [Theme UI], & [Hack Club Theme].
 
 ---
 
-Hack Club, 2022. MIT License.
+Hack Club, 2023. MIT License.
 
 [next.js]: https://nextjs.org
 [mdx]: https://mdxjs.com
