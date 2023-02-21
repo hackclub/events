@@ -1,4 +1,4 @@
-import { Card, Box, Text, Flex, Avatar, Heading } from 'theme-ui'
+import { Card, Box, Text, Flex, Avatar, Heading, Badge } from 'theme-ui'
 import tt from 'tinytime'
 import Link from 'next/link'
 import Sparkles from './sparkles'
@@ -7,7 +7,18 @@ const past = dt => new Date(dt) < new Date()
 const now = (start, end) =>
   new Date() > new Date(start) && new Date() < new Date(end)
 
-const Event = ({ id, slug, title, desc, leader, avatar, start, end, cal }) => (
+const Event = ({
+  id,
+  slug,
+  title,
+  desc,
+  leader,
+  avatar,
+  start,
+  end,
+  cal,
+  tags
+}) => (
   <Link href="/[slug]" as={`/${slug}`} passHref>
     <Box
       as="a"
@@ -56,6 +67,23 @@ const Event = ({ id, slug, title, desc, leader, avatar, start, end, cal }) => (
           />
         )}
         <Text as="span">{leader}</Text>
+      </Flex>
+      <Flex sx={{ mt: 2 }}>
+        {tags.length > 0 &&
+          tags.map(tag => (
+            <Badge
+              as="span"
+              sx={{
+                mr: 2,
+                bg: 'sunken',
+                color: 'muted',
+                borderRadius: 'circle',
+                fontWeight: 'normal'
+              }}
+            >
+              #{tag}
+            </Badge>
+          ))}
       </Flex>
       {now(start, end) && (
         <Sparkles

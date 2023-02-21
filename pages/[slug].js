@@ -9,7 +9,8 @@ import {
   Heading,
   Link,
   Spinner,
-  Text
+  Text,
+  Badge
 } from 'theme-ui'
 import { Calendar, Youtube } from 'react-feather'
 import { useRouter } from 'next/router'
@@ -43,6 +44,35 @@ const Page = ({ event }) => (
     />
     <Box as="header" sx={{ bg: 'sheet' }}>
       <Container sx={{ textAlign: 'center', pt: [3, 4], pb: [3, 4] }}>
+        <Flex
+          sx={{
+            justifyContent: 'center',
+            color: 'muted',
+            columnGap: 2,
+            mt: 1
+          }}
+        >
+          {event.tags.map(tag => (
+            <Badge
+              as="a"
+              href={`/tag/${tag}`}
+              variant="outline"
+              key={tag}
+              sx={{
+                color: 'muted',
+                textDecoration: 'none',
+                ':hover,:focus': { bg: 'sunken', color: 'text' },
+                transition: 'background-color 0.125s ease-in-out',
+                border: 'none',
+                py: 0,
+                px: 1,
+                fontSize: '14px'
+              }}
+            >
+              #{tag}
+            </Badge>
+          ))}
+        </Flex>
         <Heading as="h1" variant="title" sx={{ mb: 2 }}>
           {event.title}
         </Heading>
@@ -169,13 +199,16 @@ const Page = ({ event }) => (
             as="section"
             sx={{
               display: 'grid',
-              gridTemplateColumns: [null, event.amaForm ? 'repeat(2, 1fr)' : null],
+              gridTemplateColumns: [
+                null,
+                event.amaForm ? 'repeat(2, 1fr)' : null
+              ],
               gridGap: [3, 4],
               maxWidth: 'copyPlus'
             }}
           >
-            {event.amaForm ? <AMARsvp {...event} />  : ''}
-            <Card sx={{margin: event.amaForm ? 'default' : 'auto'}}>
+            {event.amaForm ? <AMARsvp {...event} /> : ''}
+            <Card sx={{ margin: event.amaForm ? 'default' : 'auto' }}>
               <Heading as="h2" variant="headline" mt={0}>
                 Not part of the{' '}
                 <Link href="https://hackclub.com/">Hack&nbsp;Club</Link> Slack?
