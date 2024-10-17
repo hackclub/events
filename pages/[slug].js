@@ -261,5 +261,6 @@ export const getStaticProps = async ({ params }) => {
   const events = await getEvents()
   const event = find(events, { slug })
   event.html = await md(event.desc)
+  event.desc ??= null
   return { props: { event }, revalidate: 2 }
 }
