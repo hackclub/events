@@ -43,13 +43,13 @@ export default ({ months }) => (
           a: { variant: 'buttons.outline', color: 'secondary', mx: 2 }
         }}
       >
-        <Link href="/past" passHref>
+        <Link href="/past" passHref legacyBehavior>
           <Button as="a" variant="outline">
             <SkipBack />
             View past events
           </Button>
         </Link>
-        <Link href="/data" passHref>
+        <Link href="/data" passHref legacyBehavior>
           <Button as="a">
             <Activity />
             Events API
