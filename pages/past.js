@@ -1,5 +1,7 @@
 import { Container, Box, Heading } from 'theme-ui'
 import Month from '../components/month'
+import { getEvents } from '../lib/data'
+import { filter, groupBy } from 'lodash'
 
 export default ({ months }) => (
   <>
@@ -29,8 +31,6 @@ export default ({ months }) => (
 )
 
 export const getStaticProps = async () => {
-  const { getEvents } = require('../lib/data')
-  const { groupBy, filter } = require('lodash')
   let events = await getEvents()
   // Select events from past months
   events = filter(
@@ -41,7 +41,11 @@ export const getStaticProps = async () => {
   )
   let months = groupBy(events, e => e.start.substring(0, 7))
 
-  Object.keys(months).forEach((k, i) => months[k] =
-	months[k].map(event => { return { ...event, desc: event.desc ?? null } }))
+  Object.keys(months).forEach(
+    (k, i) =>
+      (months[k] = months[k].map(event => {
+        return { ...event, desc: event.desc ?? null }
+      }))
+  )
   return { props: { months }, revalidate: 5 }
 }

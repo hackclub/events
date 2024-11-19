@@ -1,9 +1,9 @@
 // Full credit to https://joshwcomeau.com/react/animated-sparkles-in-react/
 import React from 'react'
 import styled from '@emotion/styled'
-import { keyframes } from '@emotion/core'
+import { keyframes } from '@emotion/react'
 import { range, sample, random } from 'lodash'
-import { Box, Text } from 'theme-ui'
+import { Box } from 'theme-ui'
 import theme from '@hackclub/theme'
 
 import useRandomInterval from '../lib/use-random-interval'

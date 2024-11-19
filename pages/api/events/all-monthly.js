@@ -1,5 +1,5 @@
-const { getEvents } = require('../../../lib/data')
-const { groupBy } = require('lodash')
+import { getEvents } from '../../../lib/data'
+import { groupBy } from 'lodash'
 
 export default async (req, res) => {
   const events = await getEvents()

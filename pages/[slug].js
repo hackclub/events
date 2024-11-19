@@ -19,8 +19,10 @@ import tt from 'tinytime'
 import YouTubePlayer from 'react-player/youtube'
 import { useState, useEffect } from 'react'
 
-// import RSVP from '../components/rsvp'
 import AMARsvp from '../components/ama-rsvp'
+import { getEvents } from '../lib/data'
+import { find, map } from 'lodash'
+import { parse } from 'marked'
 
 const fullDate = event => tt('{MM} {DD}, {YYYY}').render(new Date(event.start))
 const past = dt => new Date(dt) < new Date()
@@ -114,8 +116,10 @@ const Page = ({ event }) => (
         )}
       </Box>
       <Box as="article">
-        <Text variant="caption">{fullDate(event)}</Text>
-        <Text variant="subtitle">
+        <Text variant="caption" sx={{ display: 'block' }}>
+          {fullDate(event)}
+        </Text>
+        <Text variant="subtitle" sx={{ display: 'block' }}>
           {tt('{h}:{mm} {a}').render(new Date(event.start))}–
           {tt('{h}:{mm} {a}').render(new Date(event.end))}
         </Text>
@@ -168,13 +172,16 @@ const Page = ({ event }) => (
             as="section"
             sx={{
               display: 'grid',
-              gridTemplateColumns: [null, event.amaForm ? 'repeat(2, 1fr)' : null],
+              gridTemplateColumns: [
+                null,
+                event.amaForm ? 'repeat(2, 1fr)' : null
+              ],
               gridGap: [3, 4],
               maxWidth: 'copyPlus'
             }}
           >
-            {event.amaForm ? <AMARsvp {...event} />  : ''}
-            <Card sx={{margin: event.amaForm ? 'default' : 'auto'}}>
+            {event.amaForm ? <AMARsvp {...event} /> : ''}
+            <Card sx={{ margin: event.amaForm ? 'default' : 'auto' }}>
               <Heading as="h2" variant="headline" mt={0}>
                 Not part of the{' '}
                 <Link href="https://hackclub.com/">Hack&nbsp;Club</Link> Slack?
@@ -191,62 +198,73 @@ const Page = ({ event }) => (
   </>
 )
 
-let emojisRecachedThisPageload = false;
+let emojisRecachedThisPageload = false
 /**
  * Gets a full list of emojis from the Badger API.
- * Caches the result, and uses results from previous page loads but re-fetches in the background for future page loads.  
+ * Caches the result, and uses results from previous page loads but re-fetches in the background for future page loads.
  * This is necessary because we currently need to download _every_ emoji on each page load, which can take multiple seconds.
  * It would be nice if Badger could cache and only send emojis we need.
  */
 async function getEmojis(bypassCache = false) {
-  if(!bypassCache) {
-    const cached = localStorage.getItem("emojis");
-    if(cached) {
-      if(!emojisRecachedThisPageload) {
-        emojisRecachedThisPageload = true;
-        setTimeout(async () => localStorage.setItem("emojis", JSON.stringify(await getEmojis(true))), 500);
+  if (!bypassCache) {
+    const cached = localStorage.getItem('emojis')
+    if (cached) {
+      if (!emojisRecachedThisPageload) {
+        emojisRecachedThisPageload = true
+        setTimeout(
+          async () =>
+            localStorage.setItem(
+              'emojis',
+              JSON.stringify(await getEmojis(true))
+            ),
+          500
+        )
       }
 
-      return JSON.parse(cached);
+      return JSON.parse(cached)
     }
   }
 
   try {
-    const emojiData = await (await fetch('https://badger.hackclub.dev/api/emoji/')).json();
-    localStorage.setItem("emojis", JSON.stringify(emojiData));
-    return emojiData;
+    const emojiData = await (
+      await fetch('https://badger.hackclub.dev/api/emoji/')
+    ).json()
+    localStorage.setItem('emojis', JSON.stringify(emojiData))
+    return emojiData
   } catch (e) {
-    console.error("Failed to fetch emojis:", e);
-    return null;
+    console.error('Failed to fetch emojis:', e)
+    return null
   }
 }
 
 /**
- * Renders the description of the event, replacing emoji shortcodes with actual images.  
- * The event description is currently stored as HTML, so we manipulate it as a string directly.  
+ * Renders the description of the event, replacing emoji shortcodes with actual images.
+ * The event description is currently stored as HTML, so we manipulate it as a string directly.
  * This isn't an ideal solution, though; it may be better to store the description as Markdown,
  * especially considering we don't use any HTML-specific features at the moment.
  */
 const EventDescription = ({ html: initialHTML }) => {
-  const [html, setHtml] = useState(initialHTML);
+  const [html, setHtml] = useState(initialHTML)
 
-  const emojiRegex = /(:[^ .,;`\u2013~!@#$%^&*(){}=\\:"<>?|A-Z]+:)/g;
+  const emojiRegex = /(:[^ .,;`\u2013~!@#$%^&*(){}=\\:"<>?|A-Z]+:)/g
 
   useEffect(() => {
     async function replaceEmoji() {
-      const emojis = await getEmojis();
-      if(!emojis) return;
+      const emojis = await getEmojis()
+      if (!emojis) return
 
-      setHtml(html.replace(emojiRegex, (match) => {
-        const emojiName = match.slice(1, -1);
-        const emojiURL = emojis[emojiName];
+      setHtml(
+        html.replace(emojiRegex, match => {
+          const emojiName = match.slice(1, -1)
+          const emojiURL = emojis[emojiName]
 
-        if(!emojiURL || !emojiURL.startsWith('http')) return match;
-        return `<img src="${emojiURL}" alt="${emojiName}" style="height: 1em; vertical-align: text-bottom;" />`;
-      }));
+          if (!emojiURL || !emojiURL.startsWith('http')) return match
+          return `<img src="${emojiURL}" alt="${emojiName}" style="height: 1em; vertical-align: text-bottom;" />`
+        })
+      )
     }
-    replaceEmoji();
-  }, []);
+    replaceEmoji()
+  }, [])
 
   return (
     <Text
@@ -310,8 +328,6 @@ export default props => {
 }
 
 export const getStaticPaths = async () => {
-  const { getEvents } = require('../lib/data')
-  const { map } = require('lodash')
   const events = await getEvents()
   const slugs = map(events, 'slug')
   const paths = slugs.map(slug => ({ params: { slug } }))
@@ -319,13 +335,10 @@ export const getStaticPaths = async () => {
 }
 
 export const getStaticProps = async ({ params }) => {
-  const md = require('@hackclub/markdown')
   const { slug } = params
-  const { getEvents } = require('../lib/data')
-  const { find } = require('lodash')
   const events = await getEvents()
   const event = find(events, { slug })
-  event.html = await md(event.desc)
+  event.html = await parse(event.desc)
   event.desc ??= null
   return { props: { event }, revalidate: 2 }
 }

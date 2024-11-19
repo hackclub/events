@@ -1,5 +1,5 @@
-const { getEvents } = require('../../../lib/data')
-const { filter } = require('lodash')
+import { filter } from 'lodash'
+import { getEvents } from '../../../lib/data'
 
 export default async (req, res) => {
   let events = await getEvents()
