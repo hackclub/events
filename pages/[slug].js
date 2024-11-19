@@ -17,6 +17,7 @@ import Head from 'next/head'
 import Meta from '@hackclub/meta'
 import tt from 'tinytime'
 import YouTubePlayer from 'react-player/youtube'
+import { useState, useEffect } from 'react'
 
 // import RSVP from '../components/rsvp'
 import AMARsvp from '../components/ama-rsvp'
@@ -118,11 +119,9 @@ const Page = ({ event }) => (
           {tt('{h}:{mm} {a}').render(new Date(event.start))}–
           {tt('{h}:{mm} {a}').render(new Date(event.end))}
         </Text>
-        <Box
-          as={BaseStyles}
-          sx={{ my: [2, 3], fontSize: [2, 3] }}
-          dangerouslySetInnerHTML={{ __html: event.html }}
-        />
+
+        <EventDescription html={event.html} />
+
         {!past(event.start) && (
           <Button
             as="a"
@@ -191,6 +190,72 @@ const Page = ({ event }) => (
     )}
   </>
 )
+
+let emojisRecachedThisPageload = false;
+/**
+ * Gets a full list of emojis from the Badger API.
+ * Caches the result, and uses results from previous page loads but re-fetches in the background for future page loads.  
+ * This is necessary because we currently need to download _every_ emoji on each page load, which can take multiple seconds.
+ * It would be nice if Badger could cache and only send emojis we need.
+ */
+async function getEmojis(bypassCache = false) {
+  if(!bypassCache) {
+    const cached = localStorage.getItem("emojis");
+    if(cached) {
+      if(!emojisRecachedThisPageload) {
+        emojisRecachedThisPageload = true;
+        setTimeout(async () => localStorage.setItem("emojis", JSON.stringify(await getEmojis(true))), 500);
+      }
+
+      return JSON.parse(cached);
+    }
+  }
+
+  try {
+    const emojiData = await (await fetch('https://badger.hackclub.dev/api/emoji/')).json();
+    localStorage.setItem("emojis", JSON.stringify(emojiData));
+    return emojiData;
+  } catch (e) {
+    console.error("Failed to fetch emojis:", e);
+    return null;
+  }
+}
+
+/**
+ * Renders the description of the event, replacing emoji shortcodes with actual images.  
+ * The event description is currently stored as HTML, so we manipulate it as a string directly.  
+ * This isn't an ideal solution, though; it may be better to store the description as Markdown,
+ * especially considering we don't use any HTML-specific features at the moment.
+ */
+const EventDescription = ({ html: initialHTML }) => {
+  const [html, setHtml] = useState(initialHTML);
+
+  const emojiRegex = /(:[^ .,;`\u2013~!@#$%^&*(){}=\\:"<>?|A-Z]+:)/g;
+
+  useEffect(() => {
+    async function replaceEmoji() {
+      const emojis = await getEmojis();
+      if(!emojis) return;
+
+      setHtml(html.replace(emojiRegex, (match) => {
+        const emojiName = match.slice(1, -1);
+        const emojiURL = emojis[emojiName];
+
+        if(!emojiURL || !emojiURL.startsWith('http')) return match;
+        return `<img src="${emojiURL}" alt="${emojiName}" style="height: 1em; vertical-align: text-bottom;" />`;
+      }));
+    }
+    replaceEmoji();
+  }, []);
+
+  return (
+    <Text
+      as="section"
+      sx={{ my: [2, 4], fontSize: [2, 3] }}
+      dangerouslySetInnerHTML={{ __html: html }}
+    />
+  )
+}
 
 const Embed = props => (
   <Box
