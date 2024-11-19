@@ -250,7 +250,7 @@ const EventDescription = ({ html: initialHTML }) => {
 
   return (
     <Text
-      as="section"
+      as={BaseStyles}
       sx={{ my: [2, 4], fontSize: [2, 3] }}
       dangerouslySetInnerHTML={{ __html: html }}
     />
