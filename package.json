@@ -11,15 +11,12 @@
     "format": "prettier --write ."
   },
   "dependencies": {
-    "@babel/helper-get-function-arity": "^7.16.7",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@hackclub/meta": "^1.0.0",
     "@hackclub/theme": "^0.3.0",
     "@mdx-js/loader": "^3.1.0",
     "@next/mdx": "15.0.3",
-    "airtable-plus": "^1.0.4",
-    "babel": "^6.23.0",
     "date-fns": "^4.1.0",
     "dotenv": "^16.4.5",
     "github-slugger": "^2.0.0",
