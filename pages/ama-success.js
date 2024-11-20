@@ -1,5 +1,5 @@
-import { Card, Container, Text, Heading, Button } from 'theme-ui'
-import { useRouter, withRouter } from 'next/router'
+import { Card, Text, Heading, Button } from 'theme-ui'
+import { useRouter } from 'next/router'
 
 export default () => {
   const {

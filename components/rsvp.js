@@ -4,15 +4,12 @@ import { Button, Card, Grid, Heading, Input, Label, Text } from 'theme-ui'
 const RSVP = ({ id }) => {
   const [phone, setPhone] = useState('')
   const [status, setStatus] = useState('')
-  useEffect(
-    () => {
-      setTimeout(() => {
-        setPhone('')
-        setStatus('')
-      }, 1500)
-    },
-    [status]
-  )
+  useEffect(() => {
+    setTimeout(() => {
+      setPhone('')
+      setStatus('')
+    }, 1500)
+  }, [status])
   return (
     <Card sx={{ mt: [3, 4] }}>
       <Heading variant="headline" sx={{ mt: 0, mb: 1 }}>

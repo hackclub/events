@@ -2,6 +2,7 @@ import { Container, Box, Text, Heading, Button, Link as A } from 'theme-ui'
 import Link from 'next/link'
 import Month from '../components/month'
 import { Activity, SkipBack } from 'react-feather'
+import { getUpcomingMonthly } from './api/events/upcoming-monthly'
 
 export default ({ months }) => (
   <>
@@ -30,7 +31,7 @@ export default ({ months }) => (
       {Object.keys(months).map(key => (
         <Month key={key} month={key} events={months[key]} />
       ))}
-      {Object.keys(months).length== 0 && (
+      {Object.keys(months).length == 0 && (
         <Box sx={{ textAlign: 'center' }}>
           <h1 sx={{ fontWeight: '400' }}>🚧 More events coming soon.</h1>
         </Box>
@@ -61,7 +62,6 @@ export default ({ months }) => (
 )
 
 export const getStaticProps = async () => {
-  const { getUpcomingMonthly } = require('./api/events/upcoming-monthly')
   const months = await getUpcomingMonthly()
   return { props: { months }, revalidate: 1 }
 }

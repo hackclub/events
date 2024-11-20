@@ -1,4 +1,4 @@
-import { Card, Box, Text, Flex, Avatar, Heading } from 'theme-ui'
+import { Box, Text, Flex, Avatar, Heading } from 'theme-ui'
 import tt from 'tinytime'
 import Link from 'next/link'
 import Sparkles from './sparkles'

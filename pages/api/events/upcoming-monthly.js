@@ -1,5 +1,6 @@
-const { getEvents } = require('../../../lib/data')
-const { groupBy, filter } = require('lodash')
+import { getEvents } from '../../../lib/data'
+
+import { filter, groupBy } from 'lodash'
 
 export const getUpcomingMonthly = async () => {
   let events = await getEvents()

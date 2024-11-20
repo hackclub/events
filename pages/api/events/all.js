@@ -1,4 +1,4 @@
-const { getEvents } = require('../../../lib/data')
+import { getEvents } from '../../../lib/data'
 
 export default async (req, res) => {
   const events = await getEvents()

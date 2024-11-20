@@ -12,7 +12,7 @@ const useForm = (
   const onFieldChange = (e, name, type) => {
     e.persist()
     const value = e.target[type === 'checkbox' ? 'checked' : 'value']
-    setData((data) => ({ ...data, [name]: value }))
+    setData(data => ({ ...data, [name]: value }))
   }
 
   useEffect(() => {
@@ -22,7 +22,7 @@ const useForm = (
   const useField = (name, type = 'text', ...props) => {
     const checkbox = type === 'checkbox'
     const empty = checkbox ? false : ''
-    const onChange = (e) => onFieldChange(e, name, type)
+    const onChange = e => onFieldChange(e, name, type)
     const value = data[name] || empty
     return {
       name,
@@ -40,15 +40,15 @@ const useForm = (
       ? `https://events.hackclub.com${submitURL}`
       : submitURL
 
-  const onSubmit = (e) => {
+  const onSubmit = e => {
     e.preventDefault()
     setStatus('submitting')
     fetch(action, {
       method,
       body: JSON.stringify({ ...data, ...options.extraData })
     })
-      .then((r) => r.json())
-      .then((r) => {
+      .then(r => r.json())
+      .then(r => {
         setStatus('success')
         if (callback) callback(r)
         //setTimeout(() => setStatus('default'), 2000)
@@ -56,7 +56,7 @@ const useForm = (
           setTimeout(() => setData({}), options.clearOnSubmit)
         }
       })
-      .catch((e) => {
+      .catch(e => {
         console.error(e)
         setStatus('error')
       })
