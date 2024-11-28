@@ -15,8 +15,13 @@ const Event = ({ id, slug, title, desc, leader, avatar, start, end, cal }) => (
         position: 'relative',
         textDecoration: 'none',
         bg: 'elevated',
+        borderRadius: 'extra',
+        overflow: 'hidden',
         color: 'text',
-        p: [3, 3]
+        border: '1px solid',
+        borderColor: 'border',
+        boxShadow: 'elevated',
+        p: [3, 3] 
       }}
     >
       <Box
