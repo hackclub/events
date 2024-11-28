@@ -21,4 +21,4 @@ export default ({ month, events }) => (
       ))}
     </Grid>
   </>
-)
+) 
