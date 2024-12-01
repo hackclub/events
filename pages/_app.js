@@ -4,11 +4,11 @@ import Head from 'next/head'
 import Meta from '@hackclub/meta'
 import '@hackclub/theme/fonts/reg-bold.css'
 import theme from '@hackclub/theme'
-import { ThemeProvider } from 'theme-ui'
+import { ThemeUIProvider } from 'theme-ui'
 import Nav from '../components/nav'
 
 const App = ({ Component, pageProps }) => (
-  <ThemeProvider theme={theme}>
+  <ThemeUIProvider theme={theme}>
     <Meta
       as={Head}
       name="Hack Club"
@@ -18,7 +18,7 @@ const App = ({ Component, pageProps }) => (
     />
     <Nav />
     <Component {...pageProps} />
-  </ThemeProvider>
+  </ThemeUIProvider>
 )
 
 export default App
