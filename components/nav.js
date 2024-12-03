@@ -1,8 +1,9 @@
-import { ArrowLeft, Moon, GitHub } from 'react-feather'
+import { ArrowLeft, Moon, GitHub, LogIn } from 'react-feather'
 import { Box, Container, IconButton, Image, Link as A } from 'theme-ui'
 import { useColorMode } from 'theme-ui'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import { useSession } from 'next-auth/react'
 
 const NavButton = ({ sx, ...props }) => (
   <IconButton
@@ -63,9 +64,11 @@ const ColorSwitcher = props => {
 }
 
 export default () => {
+  const {data: session} = useSession()
   const [mode] = useColorMode()
   const router = useRouter()
   const home = router.pathname === '/'
+
   return (
     <Box
       as="nav"
@@ -92,11 +95,23 @@ export default () => {
           as="a"
           href="https://github.com/hackclub/events"
           aria-label="View source code on GitHub"
-          sx={{ ml: 'auto' }}
+          sx={{ ml: 'auto', mr: 3 }}
         >
           <GitHub size={24} />
         </NavButton>
         <ColorSwitcher />
+        {session ? (
+          <img src={session.user.image} alt={session.user.name} style={{borderRadius: '50%', height: '24px', width: '24px', marginLeft: '32px'}} />
+        ) : (
+          <NavButton
+          as="a"
+          href="/api/auth/signin"
+          aria-label="Sign in"
+          sx={{ ml: 3 }}
+          >
+        <LogIn size={24} />
+          </NavButton>
+        )}
       </Container>
     </Box>
   )

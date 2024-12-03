@@ -336,6 +336,7 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = async ({ params }) => {
   const { slug } = params
+  console.log('slug', slug)
   const events = await getEvents()
   const event = find(events, { slug })
   event.html = await parse(event.desc)

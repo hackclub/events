@@ -5,7 +5,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "dev": "next",
+    "dev": "NODE_ENV=development next",
     "build": "next build",
     "start": "next start",
     "format": "prettier --write ."
@@ -23,6 +23,7 @@
     "lodash": "^4.17.21",
     "marked": "^15.0.1",
     "next": "15.0.3",
+    "next-auth": "^5.0.0-beta.25",
     "react": "19.0.0-rc-66855b96-20241106",
     "react-dom": "19.0.0-rc-66855b96-20241106",
     "react-feather": "^2.0.8",
@@ -31,6 +32,9 @@
     "tinytime": "^0.2.6"
   },
   "devDependencies": {
-    "prettier": "^3.3.3"
+    "@types/node": "22.10.1",
+    "@types/react": "18.3.12",
+    "prettier": "^3.3.3",
+    "typescript": "5.7.2"
   }
 }
