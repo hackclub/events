@@ -20,183 +20,211 @@ import YouTubePlayer from 'react-player/youtube'
 import { useState, useEffect } from 'react'
 
 import AMARsvp from '../components/ama-rsvp'
-import { getEvents } from '../lib/data'
+import { getEvents, getUsers } from '../lib/data'
 import { find, map } from 'lodash'
 import { parse } from 'marked'
+import { useSession } from 'next-auth/react'
 
 const fullDate = event => tt('{MM} {DD}, {YYYY}').render(new Date(event.start))
 const past = dt => new Date(dt) < new Date()
 
-const Page = ({ event }) => (
-  <>
-    <Meta
-      as={Head}
-      name="Hack Club Events"
-      title={event.title}
-      description={`${event.ama ? 'An AMA hosted by' : 'An event by'} ${
-        event.leader
-      } on ${fullDate(event)} at Hack Club.`}
-      image={`https://workshop-cards.hackclub.com/${encodeURIComponent(
-        event.title
-      )}.png?brand=Events&fontSize=225px&caption=${encodeURIComponent(
-        `${event.leader} – ${fullDate(event)}`
-      )}${event.amaAvatar && `&images=${event.amaAvatar}&theme=dark`}&images=${
-        event.avatar
-      }`}
-    />
-    <Box as="header" sx={{ bg: 'sheet' }}>
-      <Container sx={{ textAlign: 'center', pt: [3, 4], pb: [3, 4] }}>
-        <Heading as="h1" variant="title" sx={{ mb: 2 }}>
-          {event.title}
-        </Heading>
-        <Flex
-          sx={{
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'muted',
-            fontSize: 2
-          }}
-        >
-          <Text as="span">
-            {event.ama ? 'An event hosted by' : 'An event by'}
-          </Text>
-          <Avatar
-            src={event.avatar}
-            alt={`${event.leader} profile picture`}
-            size={36}
-            sx={{ mx: 2, height: 36 }}
-          />
-          <Text as="span">{event.leader}</Text>
-        </Flex>
-      </Container>
-    </Box>
-    <Container
-      as="article"
-      sx={{
-        maxWidth: [null, 'copy', 'copyPlus'],
-        display: 'grid',
-        gridGap: [3, 4],
-        gridTemplateColumns: [null, 'auto 1fr'],
-        alignItems: 'start',
-        py: [3, 4]
-      }}
-    >
-      <Box as="aside">
-        <Box
-          sx={{
-            borderRadius: ['extra', 'ultra'],
-            fontWeight: 'bold',
-            textAlign: 'center',
-            border: '4px solid',
-            borderColor: past(event.end) ? 'muted' : 'primary',
-            width: [96, 128]
-          }}
-        >
-          <Box
+const Page = ({ event }) => {
+  const { data: session } = useSession()
+  const [interested, setInterested] = useState(false)
+  const userId = session?.user?.id || ''
+  const ownEvent = event.leaderSlackId === userId
+  const interestedUsers = event.interestedUsers || []
+  getUsers().then(users => {
+    const userAirtableId = users.find(user => user.fields['Slack ID'] === userId)?.id;
+    setInterested(interestedUsers.includes(userAirtableId));
+    console.log(interested, userAirtableId, userId)
+  })
+  
+  return (
+    <>
+      <Meta
+        as={Head}
+        name="Hack Club Events"
+        title={event.title}
+        description={`${event.ama ? 'An AMA hosted by' : 'An event by'} ${event.leader
+          } on ${fullDate(event)} at Hack Club.`}
+        image={`https://workshop-cards.hackclub.com/${encodeURIComponent(
+          event.title
+        )}.png?brand=Events&fontSize=225px&caption=${encodeURIComponent(
+          `${event.leader} – ${fullDate(event)}`
+        )}${event.amaAvatar && `&images=${event.amaAvatar}&theme=dark`}&images=${event.avatar
+          }`}
+      />
+      <Box as="header" sx={{ bg: 'sheet' }}>
+        <Container sx={{ textAlign: 'center', pt: [3, 4], pb: [3, 4] }}>
+          <Heading as="h1" variant="title" sx={{ mb: 2 }}>
+            {event.title} - {interested ? 'Interested' : 'Not Interested'}
+          </Heading>
+          <Flex
             sx={{
-              bg: past(event.end) ? 'muted' : 'primary',
-              color: 'white',
-              fontSize: [2, 3]
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'muted',
+              fontSize: 2
             }}
           >
-            {tt('{MM}').render(new Date(event.start))}
-          </Box>
+            <Text as="span">
+              {event.ama ? 'An event hosted by' : 'An event by'}
+            </Text>
+            <Avatar
+              src={event.avatar}
+              alt={`${event.leader} profile picture`}
+              size={36}
+              sx={{ mx: 2, height: 36 }}
+            />
+            <Text as="span">{event.leader} {ownEvent && '(you!)'}</Text>
+          </Flex>
+        </Container>
+      </Box>
+      <Container
+        as="article"
+        sx={{
+          maxWidth: [null, 'copy', 'copyPlus'],
+          display: 'grid',
+          gridGap: [3, 4],
+          gridTemplateColumns: [null, 'auto 1fr'],
+          alignItems: 'start',
+          py: [3, 4]
+        }}
+      >
+        <Box as="aside">
           <Box
             sx={{
-              color: past(event.end) ? 'muted' : 'text',
-              fontSize: [4, 5, 6],
-              lineHeight: 'subheading'
+              borderRadius: ['extra', 'ultra'],
+              fontWeight: 'bold',
+              textAlign: 'center',
+              border: '4px solid',
+              borderColor: past(event.end) ? 'muted' : 'primary',
+              width: [96, 128]
             }}
           >
-            {tt('{DD}').render(new Date(event.start))}
+            <Box
+              sx={{
+                bg: past(event.end) ? 'muted' : 'primary',
+                color: 'white',
+                fontSize: [2, 3]
+              }}
+            >
+              {tt('{MM}').render(new Date(event.start))}
+            </Box>
+            <Box
+              sx={{
+                color: past(event.end) ? 'muted' : 'text',
+                fontSize: [4, 5, 6],
+                lineHeight: 'subheading'
+              }}
+            >
+              {tt('{DD}').render(new Date(event.start))}
+            </Box>
           </Box>
+          {event.amaAvatar && (
+            <Avatar size={128} sx={{ mt: 4 }} src={event.amaAvatar} />
+          )}
         </Box>
-        {event.amaAvatar && (
-          <Avatar size={128} sx={{ mt: 4 }} src={event.amaAvatar} />
-        )}
-      </Box>
-      <Box as="article">
-        <Text variant="caption" sx={{ display: 'block' }}>
-          {fullDate(event)}
-        </Text>
-        <Text variant="subtitle" sx={{ display: 'block' }}>
-          {tt('{h}:{mm} {a}').render(new Date(event.start))}–
-          {tt('{h}:{mm} {a}').render(new Date(event.end))}
-        </Text>
+        <Box as="article">
+          <Text variant="caption" sx={{ display: 'block' }}>
+            {fullDate(event)}
+          </Text>
+          <Text variant="subtitle" sx={{ display: 'block' }}>
+            {tt('{h}:{mm} {a}').render(new Date(event.start))}–
+            {tt('{h}:{mm} {a}').render(new Date(event.end))}
+          </Text>
 
-        <EventDescription html={event.html} />
+          <EventDescription html={event.html} />
 
-        {!past(event.start) && (
-          <Button
-            as="a"
-            target="_blank"
-            href={event.cal}
-            sx={{ bg: 'cyan', mb: [3, 4] }}
-          >
-            <Calendar />
-            Add to Google Calendar
-          </Button>
-        )}
-        {/* !event.ama && <RSVP {...event} /> */}
-      </Box>
-    </Container>
-    {event.ama && (
-      <Box
-        as="section"
-        sx={
-          past(event.start)
-            ? {
+          {!past(event.start) && (
+            <Box
+              sx={{
+                display: 'flex',
+                gridGap: [3, 4],
+                alignItems: 'center'
+              }}
+            >
+
+              <Button
+                as="a"
+                target="_blank"
+                href={event.cal}
+                sx={{ bg: 'cyan', mb: [3, 4] }}
+              >
+                <Calendar />
+                Add to Google Calendar
+              </Button>
+              <Button
+                as="a"
+                target="_blank"
+                href={event.eventLink}
+                sx={{ bg: 'green', mb: [3, 4] }}
+              >
+                RSVP
+              </Button>
+            </Box>
+          )}
+        </Box>
+      </Container>
+      {event.ama && (
+        <Box
+          as="section"
+          sx={
+            past(event.start)
+              ? {
                 bg: event.youtube ? 'dark' : 'background',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center'
               }
-            : { bg: 'sunken' }
-        }
-        py={[4, 5]}
-      >
-        {past(event.start) || event.youtube ? (
-          <>
-            {event.youtube && (
-              <Embed>
-                <YouTubePlayer url={event.youtube} />
-              </Embed>
-            )}
-            <Flex sx={{ justifyContent: 'center', px: 3, mt: [3, 4] }}>
-              <Subscribe />
-            </Flex>
-          </>
-        ) : null}
-        {!past(event.start) && (
-          <Container
-            as="section"
-            sx={{
-              display: 'grid',
-              gridTemplateColumns: [
-                null,
-                event.amaForm ? 'repeat(2, 1fr)' : null
-              ],
-              gridGap: [3, 4],
-              maxWidth: 'copyPlus'
-            }}
-          >
-            {event.amaForm ? <AMARsvp {...event} /> : ''}
-            <Card sx={{ margin: event.amaForm ? 'default' : 'auto' }}>
-              <Heading as="h2" variant="headline" mt={0}>
-                Not part of the{' '}
-                <Link href="https://hackclub.com/">Hack&nbsp;Club</Link> Slack?
-              </Heading>
-              <Text variant="subtitle" mb={[3, 4]}>
-                We’ll post the event recording to YouTube.
-              </Text>
-              <Subscribe />
-            </Card>
-          </Container>
-        )}
-      </Box>
-    )}
-  </>
-)
+              : { bg: 'sunken' }
+          }
+          py={[4, 5]}
+        >
+          {past(event.start) || event.youtube ? (
+            <>
+              {event.youtube && (
+                <Embed>
+                  <YouTubePlayer url={event.youtube} />
+                </Embed>
+              )}
+              <Flex sx={{ justifyContent: 'center', px: 3, mt: [3, 4] }}>
+                <Subscribe />
+              </Flex>
+            </>
+          ) : null}
+          {!past(event.start) && (
+            <Container
+              as="section"
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: [
+                  null,
+                  event.amaForm ? 'repeat(2, 1fr)' : null
+                ],
+                gridGap: [3, 4],
+                maxWidth: 'copyPlus'
+              }}
+            >
+              {event.amaForm ? <AMARsvp {...event} /> : ''}
+              <Card sx={{ margin: event.amaForm ? 'default' : 'auto' }}>
+                <Heading as="h2" variant="headline" mt={0}>
+                  Not part of the{' '}
+                  <Link href="https://hackclub.com/">Hack&nbsp;Club</Link> Slack?
+                </Heading>
+                <Text variant="subtitle" mb={[3, 4]}>
+                  We’ll post the event recording to YouTube.
+                </Text>
+                <Subscribe />
+              </Card>
+            </Container>
+          )}
+        </Box>
+      )}
+    </>
+  )
+}
 
 let emojisRecachedThisPageload = false
 /**
