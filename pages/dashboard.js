@@ -7,8 +7,7 @@ import Month from "../components/month";
 import { groupBy } from 'lodash'
 
 
-export default (props) => {
-  const events = JSON.parse(props.events);
+export default ({events}) => {
   const upcomingEvents = events.filter((event) => new Date(event.start) > new Date());
   
   // Organise events by month
@@ -63,11 +62,10 @@ export const getServerSideProps = async (context) => {
   const session = await getSession(context.req);
   const id = session?.user?.id;
   const userEvents = events.filter((event) => event.leaderSlackId === id);
-  const stringEvents = JSON.stringify(userEvents);
   
   return {
     props: {
-      events: stringEvents
+      events
     }
   }
 }

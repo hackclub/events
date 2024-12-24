@@ -37,7 +37,6 @@ const Page = ({ event }) => {
   getUsers().then(users => {
     const userAirtableId = users.find(user => user.fields['Slack ID'] === userId)?.id;
     setInterested(interestedUsers.includes(userAirtableId));
-    console.log(interested, userAirtableId, userId)
   })
   
   return (
@@ -364,7 +363,6 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = async ({ params }) => {
   const { slug } = params
-  console.log('slug', slug)
   const events = await getEvents()
   const event = find(events, { slug })
   event.html = await parse(event.desc)
