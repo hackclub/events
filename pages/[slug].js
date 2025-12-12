@@ -16,7 +16,7 @@ import { useRouter } from 'next/router'
 import Head from 'next/head'
 import Meta from '@hackclub/meta'
 import tt from 'tinytime'
-import YouTubePlayer from 'react-player/youtube'
+import ReactPlayer from 'react-player'
 import { useState, useEffect } from 'react'
 
 import AMARsvp from '../components/ama-rsvp'
@@ -159,7 +159,7 @@ const Page = ({ event }) => (
           <>
             {event.youtube && (
               <Embed>
-                <YouTubePlayer url={event.youtube} />
+                <ReactPlayer url={event.youtube} width="100%" height="100%" />
               </Embed>
             )}
             <Flex sx={{ justifyContent: 'center', px: 3, mt: [3, 4] }}>
