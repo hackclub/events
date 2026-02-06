@@ -8,10 +8,11 @@ const now = (start, end) =>
   new Date() > new Date(start) && new Date() < new Date(end)
 
 const Event = ({ id, slug, title, desc, leader, avatar, start, end, cal }) => (
-  <Link href="/[slug]" as={`/${slug}`} passHref legacyBehavior>
+  <Link href={`/${slug}`} passHref legacyBehavior>
     <Box
       as="a"
       sx={{
+        display: 'block',
         position: 'relative',
         textDecoration: 'none',
         bg: 'elevated',
