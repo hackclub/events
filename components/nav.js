@@ -21,9 +21,8 @@ const NavButton = ({ sx, ...props }) => (
 )
 
 const BackButton = ({ to = '/', text = 'All Events' }) => (
-  <Link href={to} passHref legacyBehavior>
+  <Link href={to}>
     <NavButton
-      as="a"
       title={to === '/' ? 'Back to homepage' : 'Back'}
       sx={{ display: 'flex', width: 'auto', pr: 2 }}
     >

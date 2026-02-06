@@ -40,18 +40,17 @@ export default ({ months }) => (
         as="footer"
         sx={{
           textAlign: 'center',
-          pb: [4, 5],
-          a: { variant: 'buttons.outline', color: 'secondary', mx: 2 }
+          pb: [4, 5]
         }}
       >
-        <Link href="/past" passHref legacyBehavior>
-          <Button as="a" variant="outline">
+        <Link href="/past">
+          <Button variant="outline" sx={{ color: 'secondary', mx: 2 }}>
             <SkipBack />
             View past events
           </Button>
         </Link>
-        <Link href="/data" passHref legacyBehavior>
-          <Button as="a">
+        <Link href="/data">
+          <Button variant="outline" sx={{ color: 'secondary', mx: 2 }}>
             <Activity />
             Events API
           </Button>
