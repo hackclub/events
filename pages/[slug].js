@@ -11,7 +11,7 @@ import {
   Spinner,
   Text
 } from 'theme-ui'
-import { Calendar, Youtube } from 'react-feather'
+import { Calendar, Download, Youtube } from 'react-feather'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 import Meta from '@hackclub/meta'
@@ -26,6 +26,36 @@ import { parse } from 'marked'
 
 const fullDate = event => tt('{MM} {DD}, {YYYY}').render(new Date(event.start))
 const past = dt => new Date(dt) < new Date()
+
+const ICSdate = dt =>
+  new Date(dt)
+    .toISOString()
+    .replace(/[-:]/g, '')
+    .replace(/\.\d{3}/, '')
+
+const makeICS = event => {
+  const calUrl = event.cal ? new URL(event.cal) : null
+  const details = calUrl?.searchParams.get('details') || ''
+  const location = calUrl?.searchParams.get('location') || ''
+
+  const escICS = str =>
+    str.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n')
+
+  const lines = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Hack Club//Events//EN',
+    'BEGIN:VEVENT',
+    `DTSTART:${ICSdate(event.start)}`,
+    `DTEND:${ICSdate(event.end)}`,
+    `SUMMARY:${escICS(event.title)}`,
+    `DESCRIPTION:${escICS(details)}`,
+    `LOCATION:${escICS(location)}`,
+    'END:VEVENT',
+    'END:VCALENDAR'
+  ]
+  return `data:text/calendar;charset=utf-8,${encodeURIComponent(lines.join('\r\n'))}`
+}
 
 const Page = ({ event }) => (
   <>
@@ -127,15 +157,26 @@ const Page = ({ event }) => (
         <EventDescription html={event.html} />
 
         {!past(event.start) && (
-          <Button
-            as="a"
-            target="_blank"
-            href={event.cal}
-            sx={{ bg: 'cyan', mb: [3, 4] }}
-          >
-            <Calendar />
-            Add to Google Calendar
-          </Button>
+          <Flex sx={{ gap: 2, flexWrap: 'wrap', mb: [3, 4] }}>
+            <Button
+              as="a"
+              target="_blank"
+              href={event.cal}
+              sx={{ bg: 'cyan' }}
+            >
+              <Calendar />
+              Add to Google Calendar
+            </Button>
+            <Button
+              as="a"
+              href={makeICS(event)}
+              download={`${event.slug}.ics`}
+              sx={{ bg: 'blue' }}
+            >
+              <Download />
+              Download .ics
+            </Button>
+          </Flex>
         )}
         {/* !event.ama && <RSVP {...event} /> */}
       </Box>
