@@ -801,6 +801,11 @@
   resolved "https://registry.yarnpkg.com/@ungap/structured-clone/-/structured-clone-1.3.0.tgz#d06bbb384ebcf6c505fde1c3d0ed4ddffe0aaff8"
   integrity sha512-WmoN8qaIAo7WTYWbAZuG8PYEhn5fkz7dZrqTBZ7dtt//lL2Gwms1IcnQ5yHqjDfX8Ft5j4YzDM23f87zBfDe9g==
 
+"@vercel/analytics@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@vercel/analytics/-/analytics-2.0.1.tgz#d7d7bd37af7cfbeea95db5f132ae4889f4d26407"
+  integrity sha512-MTQG6V9qQrt1tsDeF+2Uoo5aPjqbVPys1xvnIftXSJYG2SrwXRHnqEvVoYID7BTruDz4lCd2Z7rM1BdkUehk2g==
+
 "@vimeo/player@2.29.0":
   version "2.29.0"
   resolved "https://registry.yarnpkg.com/@vimeo/player/-/player-2.29.0.tgz#f620f4f936706f92c99a3807e7b7ae4a7be9452f"

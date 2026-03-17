@@ -1,4 +1,3 @@
-import React from 'react'
 import Head from 'next/head'
 
 import Meta from '@hackclub/meta'
@@ -6,6 +5,7 @@ import '@hackclub/theme/fonts/reg-bold.css'
 import theme from '@hackclub/theme'
 import { ThemeUIProvider } from 'theme-ui'
 import Nav from '../components/nav'
+import { Analytics } from "@vercel/analytics/next"
 
 const App = ({ Component, pageProps }) => (
   <ThemeUIProvider theme={theme}>
@@ -18,6 +18,7 @@ const App = ({ Component, pageProps }) => (
     />
     <Nav />
     <Component {...pageProps} />
+    <Analytics />
   </ThemeUIProvider>
 )
 
