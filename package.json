@@ -16,7 +16,7 @@
     "@hackclub/meta": "^1.0.0",
     "@hackclub/theme": "^0.3.0",
     "@mdx-js/loader": "^3.1.1",
-    "@next/mdx": "16.0.10",
+    "@next/mdx": "16.2.3",
     "@vercel/analytics": "^2.0.1",
     "date-fns": "^4.1.0",
     "dotenv": "^17.2.3",
