@@ -223,10 +223,13 @@
   resolved "https://registry.yarnpkg.com/@hackclub/meta/-/meta-1.1.33.tgz#e3ee378781330f9c13a82667e12ebe5393090f4d"
   integrity sha512-03gvSNcjIy1c2kO0XW+uuxgPHALsPubqGivb2/9NBalGNH0FqnvRvWD5h+sPV6L6hpe+TbqYZG+Sq/e/vyT8wQ==
 
-"@hackclub/theme@^0.3.0":
-  version "0.3.3"
-  resolved "https://registry.yarnpkg.com/@hackclub/theme/-/theme-0.3.3.tgz#af4249519489459c0e6f9f50a9caab419495b92e"
-  integrity sha512-+K7jVUArvpziophJCCGB6vlQ7uvsm6VQnUnhHSMnF22s681Wgv6M0w12lUJBOevTu3KtgJVCmYlY888uvdaLvQ==
+"@hackclub/theme@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@hackclub/theme/-/theme-1.1.0.tgz#e23dfeed3448249d579383b8a11954623e553199"
+  integrity sha512-kpbhmqo72RU1Z0e65eYIpmpWGzNrtnVnTa7PGWPLr6TQc23Xs6QxQy35j5+rkIbi8lnm4OwigHUgygwsOYDgqA==
+  dependencies:
+    "@emotion/react" "^11.14.0"
+    theme-ui "^0.17.4"
 
 "@img/colour@^1.0.0":
   version "1.0.0"
@@ -2194,7 +2197,7 @@ supports-preserve-symlinks-flag@^1.0.0:
   resolved "https://registry.yarnpkg.com/supports-preserve-symlinks-flag/-/supports-preserve-symlinks-flag-1.0.0.tgz#6eda4bd344a3c94aea376d4cc31bc77311039e09"
   integrity sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==
 
-theme-ui@^0.17.2:
+theme-ui@^0.17.2, theme-ui@^0.17.4:
   version "0.17.4"
   resolved "https://registry.yarnpkg.com/theme-ui/-/theme-ui-0.17.4.tgz#a8737edf2ebf5e382e97fb5bb521d07a47fa4aed"
   integrity sha512-kvmkAntXv/x362zdn7S9R16y+nIkNvT3jHJIc/g3k1kDeX6HQdkXf6w2yPK+GXIlPytJ9rx4Vvu03E59JlhxMQ==
