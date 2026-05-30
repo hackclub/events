@@ -154,6 +154,31 @@ const Page = ({ event }) => (
           {tt('{h}:{mm} {a}').render(new Date(event.end))}
         </Text>
 
+        {event.tags?.length > 0 && (
+          <Flex sx={{ gap: 1, flexWrap: 'wrap', mb: [2, 3] }}>
+            {event.tags.map(tag => (
+              <Text
+                key={tag}
+                as="span"
+                sx={{
+                  display: 'inline-block',
+                  fontSize: 0,
+                  fontWeight: 'bold',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
+                  bg: 'sunken',
+                  color: 'muted',
+                  px: 2,
+                  py: '2px',
+                  borderRadius: 'default'
+                }}
+              >
+                {tag.replace('-', ' ')}
+              </Text>
+            ))}
+          </Flex>
+        )}
+
         <EventDescription html={event.html} />
 
         {!past(event.start) && (

@@ -7,7 +7,22 @@ const past = dt => new Date(dt) < new Date()
 const now = (start, end) =>
   new Date() > new Date(start) && new Date() < new Date(end)
 
-const Event = ({ id, slug, title, desc, leader, avatar, start, end, cal }) => (
+const tagStyle = {
+  display: 'inline-block',
+  fontSize: 0,
+  fontWeight: 'bold',
+  textTransform: 'uppercase',
+  letterSpacing: '0.05em',
+  bg: 'sunken',
+  color: 'muted',
+  px: 2,
+  py: '2px',
+  borderRadius: 'default',
+  mr: 1,
+  mt: 1
+}
+
+const Event = ({ id, slug, title, desc, leader, avatar, start, end, cal, tags }) => (
   <Link href={`/${slug}`} passHref legacyBehavior>
     <Box
       as="a"
@@ -41,6 +56,15 @@ const Event = ({ id, slug, title, desc, leader, avatar, start, end, cal }) => (
       <Heading variant="subheadline" sx={{ mt: 0, mb: 1 }}>
         {title}
       </Heading>
+      {tags?.length > 0 && (
+        <Box sx={{ mb: 1 }}>
+          {tags.map(tag => (
+            <Text as="span" key={tag} sx={tagStyle}>
+              {tag.replace('-', ' ')}
+            </Text>
+          ))}
+        </Box>
+      )}
       <Flex
         sx={{
           alignItems: 'center',
