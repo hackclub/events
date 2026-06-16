@@ -18,7 +18,7 @@ export default async function handler(req, res) {
   if (typeof attending !== 'boolean') {
     return res.status(422).json({ error: 'attending must be a boolean' })
   }
-
+  
   const isabelleRes = await fetch(
     `${process.env.ISABELLE_BASE_URL}/internal/events/${id}/rsvp`,
     {
@@ -35,7 +35,7 @@ export default async function handler(req, res) {
   )
 
   if (!isabelleRes.ok) {
-    const err = await isabelleRes.json().catch(() => ())
+    const err = await isabelleRes.json().catch(() => ({}))
     return res.status(isabelleRes.status).json({ error: err.error } || 'isabelle error')
   }
 
