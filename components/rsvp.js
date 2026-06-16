@@ -55,6 +55,9 @@ const Rsvp = ({ event }) => {
       if (res.ok) {
         setAttending(newAttending)
         setCount(data.InterestCount)
+        const rsvpRes = await fetch(`/api/events/${event.id}/rsvps/`)
+        const rsvpData = await rsvpRes.json()
+        setRsvpList(rsvpData.InterestedUsers || [])
       }
     } catch (e) {
       // we're leaving it unchanged on error
