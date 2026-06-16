@@ -5,7 +5,7 @@ import { find } from 'lodash'
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
-    return res.status(405).json({ errro: 'method now allowed' })
+    return res.status(405).json({ error: 'method not allowed' })
   }
 
   const session = await getIronSession(req, res, sessionOptions)
@@ -23,9 +23,7 @@ export default async function handler(req, res) {
     return res.status(404).json({ error: 'event not found' })
   }
 
-  if (session.slackId !== event.leaderSlackId) {
-    return res.status(200).json({ interestCount: event.interestCount })
-  }
+  const isCreator = session.slackId === event.leaderSlackId
 
   const isabelleRes = await fetch(
     `${process.env.ISABELLE_BASE_URL}/internal/events/${id}/rsvps`,
@@ -41,5 +39,18 @@ export default async function handler(req, res) {
   }
 
   const data = await isabelleRes.json()
-  return res.status(200).json(data)
+  const attending = (data.InterestedUsers || []).includes(session.slackId)
+
+  if (isCreator) {
+    return res.status(200).json({
+      InterestedUsers: data.InterestedUsers || [],
+      InterestCount: data.InterestCount || 0,
+      attending,
+    })
+  }
+
+  return res.status(200).json({
+    interestCount: data.InterestCount || 0,
+    attending,
+  })
 }
