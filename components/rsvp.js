@@ -52,6 +52,41 @@ const Rsvp = ({ event }) => {
   const [loading, setLoading] = useState(false)
   const [attendees, setAttendees] = useState(null)
   const [isCreator, setIsCreator] = useState(false)
+  
+  const exportCsv = () => {
+    const headers = [
+      'Name',
+      'Slack Display Name',
+      'Slack ID',
+      'Email',
+      'RSVPed At'
+    ]
+
+    const rows = attendees.map(a => [
+      a.name || '',
+      a.slackDisplayName || '',
+      a.slackId || '',
+      a.email || '',
+      a.rsvpedAt || ''
+    ])
+
+    const csv = [
+      headers.join(','),
+      ...rows.map(row => {
+        return row.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')
+      })
+    ].join('\n')
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `${event.slug}-attendees.csv`
+    link.click()
+
+    URL.revokeObjectURL(url)
+  }
 
   useEffect(() => {
     fetch('/api/auth/me/')
@@ -135,10 +170,15 @@ const Rsvp = ({ event }) => {
       {isCreator && attendees !== null && (
         <Box sx={{ mt: 3 }}>
           <Divider sx={{ mb: 3 }} />
-          <Text sx={{ fontWeight: 'bold', mb: 1, fontSize: 1 }}>
-            Attendees ({attendees.length})
-          </Text>
-          {attendees.lengt == 0 ? (
+          <Flex
+            sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 2 }}
+          >
+            <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>Attendees ({attendees.length})</Text>
+            {attendees.length > 0 && (
+              <Button onClick={exportCsv} variant="secondary" sx={{ fontSize: 0 }}>Export CSV</Button>
+            )}
+          </Flex>
+          {attendees.length == 0 ? (
             <Text sx={{ color: 'muted', fontSize: 1 }}>No RSVPs yet.</Text>
           ) : (
             <Box>
