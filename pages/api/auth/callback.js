@@ -44,13 +44,19 @@ export default async function handler(req, res) {
   )
 
   const slackId = idTokenPayload.slack_id
+  const sub = idTokenPayload.sub || null
+  const name = idTokenPayload.name || null
+  const email = idTokenPayload.email || null
 
-  if (!slackId) {
-    return res.status(400).json({ error: 'no slack_id in token' })
+  if (!slackId && !sub) {
+    return res.status(400).json({ error: 'no identity in token' })
   }
 
   const returnTo = session.returnTo || '/'
   session.slackId = slackId
+  session.sub = sub
+  session.name = name
+  session.email = email
   session.oauthState = null
   session.returnTo = null
   await session.save()

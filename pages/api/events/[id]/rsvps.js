@@ -39,11 +39,11 @@ export default async function handler(req, res) {
   }
 
   const data = await isabelleRes.json()
-  const attending = (data.InterestedUsers || []).includes(session.slackId)
+  const attending = (data.attendees || []).some(a => a.slackId === session.slackId || (session.sub && a.sub === session.sub))
 
   if (isCreator) {
     return res.status(200).json({
-      InterestedUsers: data.InterestedUsers || [],
+      attendees: data.attendees || [],
       InterestCount: data.InterestCount || 0,
       attending,
     })

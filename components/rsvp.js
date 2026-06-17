@@ -1,12 +1,56 @@
 import { useState, useEffect } from 'react'
-import { Box, Button, Text, Flex, Avatar } from 'theme-ui'
+import { Box, Button, Text, Flex, Avatar, Divider } from 'theme-ui'
+
+const AttendeeRow = ({ attendee }) => {
+  const displayName =
+    attendee.slackDisplayName || attendee.name || attendee.slackId
+
+  const subName =
+    attendee.slackDisplayName && attendee.name ? attendee.name : null
+
+  return (
+    <Flex sx={{ alignItems: 'center', gap: 3, py: 2 }}>
+      <Avatar
+        src={`https://cachet.dunkirk.sh/users/${attendee.slackId}/r`}
+        alt={displayName}
+        sx={{ height: 36, width: 36, flexShrink: 0, borderRadius: 'circle' }}
+      />
+
+      <Box sx={{ minWidth: 0 }}>
+        <Text
+          sx={{
+            fontSize: 1,
+            fontWeight: 'bold',
+            display: 'block',
+            lineHeight: 1.2
+          }}
+        >
+          {displayName}
+        </Text>
+
+        {subName && (
+          <Text sx={{ fontSize: 0, color: 'muted', display: 'block' }}>
+            {subName}
+          </Text>
+        )}
+
+        {attendee.email && (
+          <Text sx={{ fontSize: 0, color: 'muted', display: 'block' }}>
+            {attendee.email}
+          </Text>
+        )}
+        {attendee.slackId && <Text sx={{ fontSize: 0, color: 'muted', display: 'block' }}>{attendee.slackId}</Text>}
+      </Box>
+    </Flex>
+  )
+}
 
 const Rsvp = ({ event }) => {
   const [session, setSession] = useState(null)
   const [attending, setAttending] = useState(false)
   const [count, setCount] = useState(event.interestCount || 0)
   const [loading, setLoading] = useState(false)
-  const [rsvpList, setRsvpList] = useState(null)
+  const [attendees, setAttendees] = useState(null)
   const [isCreator, setIsCreator] = useState(false)
 
   useEffect(() => {
@@ -17,29 +61,17 @@ const Rsvp = ({ event }) => {
   }, [])
 
   useEffect(() => {
-  if (!session || !session.slackId) return
-  if (session.slackId === event.leaderSlackId) {
-    setIsCreator(true)
+    if (!session?.slackId) return
+    const creator = session.slackId === event.leaderSlackId
+    setIsCreator(creator)
     fetch(`/api/events/${event.id}/rsvps/`)
-      .then(r => r.json())
-      .then(data => {
-        console.log('creator rsvps response:', data)
-        setRsvpList(data.InterestedUsers || [])
-        setCount(data.InterestCount || 0)
+    .then(r => r.json())
+    .then(data => {
+        setCount(data.InterestCount ?? data.InterestCount ?? count)
         setAttending(data.attending || false)
-      })
-      .catch(() => {})
-  } else {
-    fetch(`/api/events/${event.id}/rsvps/`)
-      .then(r => r.json())
-      .then(data => {
-        console.log('non-creator rsvps response:', data)
-        setCount(data.interestCount ?? count)
-        setAttending(data.attending || false)
-      })
-      .catch(() => {})
-  }
-}, [session])
+        if (creator) setAttendees(data.attendees || [])
+      }).catch(() => {})
+  }, [session])
 
   const handleRsvp = async () => {
     if (!session?.slackId || loading) return
@@ -55,9 +87,11 @@ const Rsvp = ({ event }) => {
       if (res.ok) {
         setAttending(newAttending)
         setCount(data.InterestCount)
-        const rsvpRes = await fetch(`/api/events/${event.id}/rsvps/`)
-        const rsvpData = await rsvpRes.json()
-        setRsvpList(rsvpData.InterestedUsers || [])
+        if (isCreator) {
+          const rsvpRes = await fetch(`/api/events/${event.id}/rsvps/`)
+          const rsvpData = await rsvpRes.json()
+          setAttendees(rsvpData.attendees || [])
+        } 
       }
     } catch (e) {
       // we're leaving it unchanged on error
@@ -98,28 +132,23 @@ const Rsvp = ({ event }) => {
           {count} {count === 1 ? 'person' : 'people'} going
         </Text>
       </Flex>
-
-      {isCreator && rsvpList !== null && (
+      {isCreator && attendees !== null && (
         <Box sx={{ mt: 3 }}>
-          <Text sx={{ fontWeight: 'bold', mb: 2, fontSize: 1 }}>
-            Attendees ({rsvpList.length})
+          <Divider sx={{ mb: 3 }} />
+          <Text sx={{ fontWeight: 'bold', mb: 1, fontSize: 1 }}>
+            Attendees ({attendees.length})
           </Text>
-          {rsvpList.length === 0 ? (
+          {attendees.lengt == 0 ? (
             <Text sx={{ color: 'muted', fontSize: 1 }}>No RSVPs yet.</Text>
           ) : (
-            <Flex sx={{ flexWrap: 'wrap', gap: 2 }}>
-              {rsvpList.map(slackId => (
-                <Flex key={slackId} sx={{ alignItems: 'center', gap: 1 }}>
-                  <Avatar
-                    src={`https://cachet.dunkirk.sh/users/${slackId}/r`}
-                    alt={slackId}
-                    size={24}
-                    sx={{ height: 24, width: 24 }}
-                  />
-                  <Text sx={{ fontSize: 0, color: 'muted' }}>{slackId}</Text>
-                </Flex>
+            <Box>
+              {attendees.map((attendee, i) => (
+                <Box key={attendee.sub || attendee.slackId || i}>
+                  <AttendeeRow attendee={attendee} />
+                  {i < attendees.length - 1 && <Divider sx={{ my: 0, opacity: 0.3 }} />}
+                </Box>
               ))}
-            </Flex>
+            </Box>
           )}
         </Box>
       )}

@@ -16,7 +16,7 @@ export default async function handler(req, res) {
     client_id: process.env.AUTH_CLIENT_ID,
     redirect_uri: `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/callback`,
     response_type: 'code',
-    scope: 'openid slack_id',
+    scope: 'openid slack_id profile email',
     state,
   })
 

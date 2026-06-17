@@ -8,7 +8,7 @@ export default async function handler(req, res) {
 
   const session = await getIronSession(req, res, sessionOptions)
 
-  if (!session.slackId) {
+  if (!session.sub && !session.slackId) {
     return res.status(401).json({ error: 'not logged in' })
   }
 
@@ -30,6 +30,12 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         slack_id: session.slackId,
         attending,
+        user_info: {
+          sub: session.sub,
+          slackId: session.slackId,
+          name: session.name,
+          email: session.email,
+        }
       }),
     }
   )

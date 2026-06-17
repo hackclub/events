@@ -68,7 +68,7 @@ export default () => {
 
   const [session, setSession] = useState(null)
   useEffect(() => {
-    fetch('/api/auth/me')
+    fetch('/api/auth/me/')
     .then(r => r.json())
     .then(data => setSession(data))
     .catch(() => setSession({ slackId: null }))
