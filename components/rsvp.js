@@ -52,7 +52,51 @@ const Rsvp = ({ event }) => {
   const [loading, setLoading] = useState(false)
   const [attendees, setAttendees] = useState(null)
   const [isCreator, setIsCreator] = useState(false)
+  const [showMenu, setShowMenu] = useState(false)
+
+  const copyToClipboard = async (text, label) => {
+    try {
+      await navigator.clipboard.writeText(text)
+      setShowMenu(false)
+    } catch (e) {
+      console.error(`failed to copy ${label}`, e)
+    }
+  }
+
+  const copyNames = () => copyToClipboard(
+    attendees.map(a => a.name || a.slackDisplayName || a.slackId)
+    .filter(Boolean).join('\n'), 'names'
+  )
   
+  const copyEmails = () => copyToClipboard(
+    attendees.map(a => a.email).filter(Boolean).join('\n'), 'emails'
+  )
+
+  const copySlackIds = () => copyToClipboard(
+    attendees.map(a => a.slackId).filter(Boolean).join('\n'), 'slack ids'
+  )
+
+  const copyFullList = () => copyToClipboard(
+    attendees.map(a => `${a.name || a.slackDisplayName || ''}\t${a.email || ''}\t${a.slackId || ''}`)
+    .join('\n'), 'attendees'
+  )
+
+  const exportJson = () => {
+    const blob = new Blob(
+      [JSON.stringify(attendees, null, 2)],
+      { type: 'application/json' }
+    )
+
+    const url = URL.createObjectURL(blob)
+
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `${event.slug}-attendees.json`
+    link.click()
+
+    URL.revokeObjectURL(url)
+  }
+
   const exportCsv = () => {
     const headers = [
       'Name',
@@ -102,7 +146,7 @@ const Rsvp = ({ event }) => {
     fetch(`/api/events/${event.id}/rsvps/`)
     .then(r => r.json())
     .then(data => {
-        setCount(data.InterestCount ?? data.InterestCount ?? count)
+        setCount(data.InterestCount ?? count)
         setAttending(data.attending || false)
         if (creator) setAttendees(data.attendees || [])
       }).catch(() => {})
@@ -134,7 +178,32 @@ const Rsvp = ({ event }) => {
       setLoading(false)
     }
   }
+  
+  const menuItemStyles = {
+    width: '100%',
 
+    px: 3,
+    py: 2,
+
+    textAlign: 'left',
+
+    bg: 'transparent',
+
+    border: 0,
+
+    color: 'text',
+
+    fontFamily: 'body',
+    fontSize: 1,
+
+    cursor: 'pointer',
+
+    transition: 'background .12s ease',
+
+    '&:hover': {
+      bg: 'sunken'
+    }
+  }
   return (
     <Box sx={{ mt: 3 }}>
       <Flex sx={{ gap: 2, flexWrap: 'wrap', alignItems: 'center', mb: 2 }}>
@@ -175,7 +244,107 @@ const Rsvp = ({ event }) => {
           >
             <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>Attendees ({attendees.length})</Text>
             {attendees.length > 0 && (
-              <Button onClick={exportCsv} variant="secondary" sx={{ fontSize: 0 }}>Export CSV</Button>
+              <Flex sx={{ gap: 2, alignItems: 'center' }}>
+                <Button onClick={exportCsv} sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 2,
+                  px: 3,
+                  py: 2,
+                  fontSize: 0,
+                  lineHeight: 1,
+                  borderRadius: 9999,
+                  bg: 'rgba(255,255,255,0.06)',
+                  color: 'text',
+                  border: '1px solid',
+                  borderColor: 'rgba(255,255,255,0.08)',
+                  transition: 'all .15s ease',
+                  '&:hover': {
+                    transform: 'translateY(-1px)',
+                    bg: 'rgba(255,255,255,0.10)',
+                    borderColor: 'rgba(255,255,255,0.15)'
+                  },
+                  '&:active': {
+                    transform: 'translateY(0)'
+                  }
+                }}>Export CSV</Button>
+                  <Box sx={{ position: 'relative' }}>
+                  <Button variant="secondary" onClick={() => setShowMenu(!showMenu)} sx={{
+                    bg: 'transparent',
+                    color: 'muted',
+                    p: 1,
+                    minWidth: 0,
+                    width: 32,
+                    height: 32,
+                    borderRadius: 'circle',
+                    '&:hover': {
+                      bg: 'sunken'
+                    }
+                  }}>
+                    ⋮
+                  </Button>
+                  {showMenu && (
+                    <Box
+                      sx={{
+                        position: 'absolute',
+                        right: 0,
+                        top: 'calc(100% + 10px)',
+                        bg: 'background',
+                        overflow: 'hidden',
+                        border: '1px solid',
+                        p: 2,
+                        borderColor: 'border',
+                        borderRadius: 3,
+                        boxShadow: '0 8px 24px rgba(0,0,0,.12)',
+                        minWidth: 200,
+                        zIndex: 1000
+                      }}
+                    >
+                      <Box
+                        as="button"
+                        onClick={copyNames}
+                        sx={menuItemStyles}
+                      >
+                        Copy Names
+                      </Box>
+
+                      <Box
+                        as="button"
+                        onClick={copyEmails}
+                        sx={menuItemStyles}
+                      >
+                        Copy Emails
+                      </Box>
+
+                      <Box
+                        as="button"
+                        onClick={copySlackIds}
+                        sx={menuItemStyles}
+                      >
+                        Copy Slack IDs
+                      </Box>
+
+                      <Box
+                        as="button"
+                        onClick={copyFullList}
+                        sx={menuItemStyles}
+                      >
+                        Copy Full List
+                      </Box>
+
+                      <Divider />
+
+                      <Box
+                        as="button"
+                        onClick={exportJson}
+                        sx={menuItemStyles}
+                      >
+                        Export JSON
+                      </Box>
+                    </Box>
+                  )}
+                </Box>
+              </Flex>  
             )}
           </Flex>
           {attendees.length == 0 ? (
