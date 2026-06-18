@@ -5,7 +5,7 @@ import Event from './event'
 export default ({ month, events }) => (
   <>
     <Heading variant="headline" sx={{ color: 'accent', px: 3, mt: [3, 4] }}>
-      {format(new Date(`${month}-02`), 'MMMM yyyy')}
+      {format(new Date(`${month}-02T12:00:00`), 'MMMM yyyy')}
     </Heading>
     <Grid
       columns={[2, 3, 4]}

@@ -22,7 +22,7 @@ import { useState, useEffect } from 'react'
 import AMARsvp from '../components/ama-rsvp'
 import { getEvents } from '../lib/data'
 import { find, map } from 'lodash'
-import { parse } from 'marked'
+import { marked } from 'marked'
 
 const fullDate = event => tt('{MM} {DD}, {YYYY}').render(new Date(event.start))
 const past = dt => new Date(dt) < new Date()
@@ -39,7 +39,11 @@ const makeICS = event => {
   const location = calUrl?.searchParams.get('location') || ''
 
   const escICS = str =>
-    str.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n')
+    str
+      .replace(/\\/g, '\\\\')
+      .replace(/;/g, '\\;')
+      .replace(/,/g, '\\,')
+      .replace(/\n/g, '\\n')
 
   const lines = [
     'BEGIN:VCALENDAR',
@@ -183,12 +187,7 @@ const Page = ({ event }) => (
 
         {!past(event.start) && (
           <Flex sx={{ gap: 2, flexWrap: 'wrap', mb: [3, 4] }}>
-            <Button
-              as="a"
-              target="_blank"
-              href={event.cal}
-              sx={{ bg: 'cyan' }}
-            >
+            <Button as="a" target="_blank" href={event.cal} sx={{ bg: 'cyan' }}>
               <Calendar />
               Add to Google Calendar
             </Button>
@@ -272,19 +271,20 @@ let emojisRecachedThisPageload = false
  * It would be nice if Badger could cache and only send emojis we need.
  */
 async function getEmojis(bypassCache = false) {
+  if (typeof localStorage === 'undefined') return null
   if (!bypassCache) {
     const cached = localStorage.getItem('emojis')
     if (cached) {
       if (!emojisRecachedThisPageload) {
         emojisRecachedThisPageload = true
-        setTimeout(
-          async () =>
+        setTimeout(async () => {
+          try {
             localStorage.setItem(
               'emojis',
               JSON.stringify(await getEmojis(true))
-            ),
-          500
-        )
+            )
+          } catch (e) {}
+        }, 500)
       }
 
       return JSON.parse(cached)
@@ -295,10 +295,22 @@ async function getEmojis(bypassCache = false) {
     const emojiData = await (
       await fetch('https://badger.hackclub.dev/api/emoji/')
     ).json()
-    localStorage.setItem('emojis', JSON.stringify(emojiData))
+    try {
+      localStorage.setItem('emojis', JSON.stringify(emojiData))
+    } catch (e) {
+      if (e.name === 'QuotaExceededError') {
+        localStorage.clear()
+      }
+      try {
+        localStorage.setItem('emojis', JSON.stringify(emojiData))
+      } catch (e2) {
+        console.error('Still too big even after clear')
+      }
+      console.error('Failed to fetch emojis:', e)
+    }
     return emojiData
   } catch (e) {
-    console.error('Failed to fetch emojis:', e)
+    // console.error('Failed to fetch emojis:', e)
     return null
   }
 }
@@ -319,8 +331,8 @@ const EventDescription = ({ html: initialHTML }) => {
       const emojis = await getEmojis()
       if (!emojis) return
 
-      setHtml(
-        html.replace(emojiRegex, match => {
+      setHtml(currentHtml =>
+        currentHtml.replace(emojiRegex, match => {
           const emojiName = match.slice(1, -1)
           const emojiURL = emojis[emojiName]
 
@@ -404,7 +416,7 @@ export const getStaticProps = async ({ params }) => {
   const { slug } = params
   const events = await getEvents()
   const event = find(events, { slug })
-  event.html = await parse(event.desc)
+  event.html = await marked.parse(event.desc)
   event.desc ??= null
   return { props: { event }, revalidate: 2 }
 }

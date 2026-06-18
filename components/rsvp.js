@@ -22,7 +22,8 @@ const RSVP = ({ id }) => {
           e.preventDefault()
           fetch(`/api/rsvp?id=${id}`, {
             method: 'POST',
-            data: JSON.stringify({ phone })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ phone })
           })
             .then(r => r.json())
             .then(r => setStatus(r.status))

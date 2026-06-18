@@ -2,9 +2,18 @@ import { Container, Box, Heading } from 'theme-ui'
 import Month from '../components/month'
 import { getEvents } from '../lib/data'
 import { filter, groupBy } from 'lodash'
+import Meta from '@hackclub/meta'
+import Head from 'next/head'
 
 export default ({ months }) => (
   <>
+    <Meta
+      as={Head}
+      name="Hack Club Events"
+      title="Past Events - Hack Club Events"
+      description="Past AMAs, show & tells, & weekly fun in the Hack Club community."
+    />
+
     <Box
       as="header"
       sx={{
@@ -36,8 +45,9 @@ export const getStaticProps = async () => {
   events = filter(
     events,
     e =>
-      new Date(new Date(e.end.substring(0, 7)).toISOString().substring(0, 7)) <
-      new Date(new Date().toISOString().substring(0, 7))
+      new Date(
+        new Date((e.end || '').substring(0, 7)).toISOString().substring(0, 7)
+      ) < new Date(new Date().toISOString().substring(0, 7))
   )
   let months = groupBy(events, e => e.start.substring(0, 7))
 

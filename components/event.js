@@ -22,7 +22,18 @@ const tagStyle = {
   mt: 1
 }
 
-const Event = ({ id, slug, title, desc, leader, avatar, start, end, cal, tags }) => (
+const Event = ({
+  id,
+  slug,
+  title,
+  desc,
+  leader,
+  avatar,
+  start,
+  end,
+  cal,
+  tags
+}) => (
   <Link href={`/${slug}`} passHref legacyBehavior>
     <Box
       as="a"
@@ -71,7 +82,12 @@ const Event = ({ id, slug, title, desc, leader, avatar, start, end, cal, tags })
           color: 'muted'
         }}
       >
-        {now(start, end)}
+        {now(start, end) && (
+          <Text as="span" sx={{ color: 'red', fontWeight: 'bold', mr: 2 }}>
+            {' '}
+            🔴 Live
+          </Text>
+        )}
         {!avatar.includes('emoji') && (
           <Avatar
             src={avatar}

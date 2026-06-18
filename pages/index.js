@@ -3,9 +3,17 @@ import Link from 'next/link'
 import Month from '../components/month'
 import { Activity, SkipBack } from 'react-feather'
 import { getUpcomingMonthly } from './api/events/upcoming-monthly'
+import Meta from '@hackclub/meta'
+import Head from 'next/head'
 
 export default ({ months }) => (
   <>
+    <Meta
+      as={Head}
+      name="Hack Club Events"
+      title="Hack Club Events"
+      description="AMAs, show & tells, & weekly fun in the Hack Club community."
+    />
     <Box
       as="header"
       sx={{
