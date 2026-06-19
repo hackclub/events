@@ -9,7 +9,7 @@ export default ({ month, events }) => (
     </Heading>
     <Grid
       columns={[2, 3, 4]}
-      gap="1px"
+      gap={2}
       sx={{
         bg: 'sunken',
         borderRadius: 'extra',
