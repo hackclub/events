@@ -11,7 +11,14 @@ import {
   Spinner,
   Text
 } from 'theme-ui'
-import { Calendar, Download, Youtube } from 'react-feather'
+import {
+  Calendar,
+  Download,
+  Youtube,
+  XCircle,
+  Users,
+  AlertTriangle
+} from 'react-feather'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 import Meta from '@hackclub/meta'
@@ -39,7 +46,11 @@ const makeICS = event => {
   const location = calUrl?.searchParams.get('location') || ''
 
   const escICS = str =>
-    str.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n')
+    str
+      .replace(/\\/g, '\\\\')
+      .replace(/;/g, '\\;')
+      .replace(/,/g, '\\,')
+      .replace(/\n/g, '\\n')
 
   const lines = [
     'BEGIN:VCALENDAR',
@@ -74,6 +85,15 @@ const Page = ({ event }) => (
         event.avatar
       }`}
     />
+    {event.cancelled && (
+      <Box sx={{ bg: 'red', color: 'white', py: 3, textAlign: 'center' }}>
+        <Container>
+          <Flex
+            sx={{ alignItems: 'center', justifyContent: 'center', ggap: 2 }}
+          ></Flex>
+        </Container>
+      </Box>
+    )}
     <Box as="header" sx={{ bg: 'sheet' }}>
       <Container sx={{ textAlign: 'center', pt: [3, 4], pb: [3, 4] }}>
         <Heading as="h1" variant="title" sx={{ mb: 2 }}>
@@ -183,12 +203,7 @@ const Page = ({ event }) => (
 
         {!past(event.start) && (
           <Flex sx={{ gap: 2, flexWrap: 'wrap', mb: [3, 4] }}>
-            <Button
-              as="a"
-              target="_blank"
-              href={event.cal}
-              sx={{ bg: 'cyan' }}
-            >
+            <Button as="a" target="_blank" href={event.cal} sx={{ bg: 'cyan' }}>
               <Calendar />
               Add to Google Calendar
             </Button>
