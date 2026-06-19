@@ -88,9 +88,21 @@ const Page = ({ event }) => (
     {event.cancelled && (
       <Box sx={{ bg: 'red', color: 'white', py: 3, textAlign: 'center' }}>
         <Container>
-          <Flex
-            sx={{ alignItems: 'center', justifyContent: 'center', ggap: 2 }}
-          ></Flex>
+          <Flex sx={{ alignItems: 'center', justifyContent: 'center', gap: 2 }}>
+            <AlertTriangle size={32} />
+            <Heading
+              as="h2"
+              variant="headline"
+              sx={{ color: 'white', m: 2, fontSize: [3, 4] }}
+            >
+              This event has been cancelled
+            </Heading>
+          </Flex>
+          {event.rawCancellation && (
+            <Text sx={{ mt: 2, opacity: 0.9, fontSize: 2 }}>
+              {event.rawCancellation}
+            </Text>
+          )}
         </Container>
       </Box>
     )}
@@ -173,8 +185,43 @@ const Page = ({ event }) => (
           {tt('{h}:{mm} {a}').render(new Date(event.start))}–
           {tt('{h}:{mm} {a}').render(new Date(event.end))}
         </Text>
+        {event.interestCount > 0 && (
+          <Flex
+            sx={{ alignItems: 'center', gap: 1, color: 'muted', mt: 1, mb: 2 }}
+          >
+            <Users size={15} />
+            <Text sx={{ fontWeight: 'bold' }}>
+              {event.interestCount}{' '}
+              {event.interestCount === 1 ? 'person is' : 'people are'}{' '}
+              interested
+            </Text>
+          </Flex>
+        )}
 
-        {event.tags?.length > 0 && (
+        {event.cancelled && (
+          <Flex sx={{ gap: 1, flexWrap: 'wrap', mb: [2, 3] }}>
+            <Text
+              as="span"
+              sx={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '4px',
+                fontSize: 0,
+                fontWeight: 'bold',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
+                bg: 'red',
+                color: 'white',
+                px: 2,
+                py: '2px',
+                borderRadius: 'default'
+              }}
+            >
+              <XCircle /> CANCELLED
+            </Text>
+          </Flex>
+        )}
+        {event.tags?.length > 0 && !event.cancelled && (
           <Flex sx={{ gap: 1, flexWrap: 'wrap', mb: [2, 3] }}>
             {event.tags.map(tag => (
               <Text
@@ -201,7 +248,7 @@ const Page = ({ event }) => (
 
         <EventDescription html={event.html} />
 
-        {!past(event.start) && (
+        {!past(event.start) && !event.cancelled && (
           <Flex sx={{ gap: 2, flexWrap: 'wrap', mb: [3, 4] }}>
             <Button as="a" target="_blank" href={event.cal} sx={{ bg: 'cyan' }}>
               <Calendar />

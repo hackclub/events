@@ -104,7 +104,7 @@ const Event = ({
         </Box>
       )}
       {tags?.length > 0 && (
-        <Box sx={{ flex: '1 1 auto', mb: 1 }}>
+        <Box sx={{ mb: 1 }}>
           {tags.map(tag => (
             <Text as="span" key={tag} sx={tagStyle}>
               {tag.replace('-', ' ')}
@@ -112,7 +112,7 @@ const Event = ({
           ))}
         </Box>
       )}
-
+      <Box sx={{ flex: '1 1 auto' }} />
       <Flex
         sx={{
           alignItems: 'center',
