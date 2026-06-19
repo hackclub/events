@@ -57,6 +57,7 @@ const ColorSwitcher = props => {
   useEffect(() => {
     setMounted(true)
   }, [])
+  //Added light mode
   return (
     <NavButton
       {...props}
