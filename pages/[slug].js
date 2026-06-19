@@ -268,13 +268,13 @@ const Page = ({ event }) => (
         {/* !event.ama && <RSVP {...event} /> */}
       </Box>
     </Container>
-    {event.ama && (
+    {(event.youtube || event.ama) && (
       <Box
         as="section"
         sx={
           past(event.start)
             ? {
-                bg: event.youtube ? 'dark' : 'background',
+                bg: 'background',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center'
@@ -283,19 +283,18 @@ const Page = ({ event }) => (
         }
         py={[4, 5]}
       >
-        {past(event.start) || event.youtube ? (
+        {past(event.start) && event.youtube && (
           <>
-            {event.youtube && (
-              <Embed>
-                <ReactPlayer url={event.youtube} width="100%" height="100%" />
-              </Embed>
-            )}
+            <Embed>
+              <ReactPlayer url={event.youtube} />
+            </Embed>
             <Flex sx={{ justifyContent: 'center', px: 3, mt: [3, 4] }}>
               <Subscribe />
             </Flex>
           </>
-        ) : null}
-        {!past(event.start) && (
+        )}
+
+        {!past(event.start) && event.ama && (
           <Container
             as="section"
             sx={{
@@ -319,6 +318,13 @@ const Page = ({ event }) => (
               </Text>
               <Subscribe />
             </Card>
+          </Container>
+        )}
+        {!past(event.start) && !event.ama && event.youtube && (
+          <Container sx={{ textAlign: 'center' }}>
+            <Text variant="subtitle">
+              This event will be livestreamed on Youtube
+            </Text>
           </Container>
         )}
       </Box>
@@ -466,6 +472,9 @@ export const getStaticProps = async ({ params }) => {
   const { slug } = params
   const events = await getEvents()
   const event = find(events, { slug })
+  if (!event) {
+    return { notFound: true }
+  }
   event.html = await parse(event.desc)
   event.desc ??= null
   return { props: { event }, revalidate: 2 }

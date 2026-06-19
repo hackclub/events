@@ -1,8 +1,9 @@
-import { ArrowLeft, Moon, GitHub } from 'react-feather'
+import { ArrowLeft, Moon, Sun, GitHub } from 'react-feather'
 import { Box, Container, IconButton, Image, Link as A } from 'theme-ui'
 import { useColorMode } from 'theme-ui'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 
 const NavButton = ({ sx, ...props }) => (
   <IconButton
@@ -10,6 +11,8 @@ const NavButton = ({ sx, ...props }) => (
     sx={{
       color: 'primary',
       borderRadius: 'circle',
+      cursor: 'pointer',
+      m: 2,
       transition: 'box-shadow .125s ease-in-out',
       ':hover,:focus': {
         boxShadow: '0 0 0 2px',
@@ -50,13 +53,26 @@ const Flag = () => (
 
 const ColorSwitcher = props => {
   const [mode, setMode] = useColorMode()
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => {
+    setMounted(true)
+  }, [])
   return (
     <NavButton
       {...props}
       onClick={() => setMode(mode === 'dark' ? 'light' : 'dark')}
       title="Reverse color scheme"
+      sx={{
+        ...props.sx,
+        transition: 'transform 0.3s ease,box-shadow .125s ease-in-out'
+      }}
     >
-      <Moon size={24} />
+      {mounted &&
+        (mode === 'dark' ? (
+          <Sun size={24} style={{ transition: 'transform 0.3s ease' }} />
+        ) : (
+          <Moon size={24} style={{ transition: 'transform 0.3s ease' }} />
+        ))}
     </NavButton>
   )
 }
