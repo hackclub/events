@@ -1,5 +1,4 @@
 {
-  "public": true,
   "rewrites": [
     {
       "source": "/arts-gala",
