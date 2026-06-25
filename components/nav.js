@@ -1,8 +1,9 @@
 import { ArrowLeft, Moon, GitHub } from 'react-feather'
-import { Box, Container, IconButton, Image, Link as A } from 'theme-ui'
+import { Box, Container, IconButton, Image, Link as A, Avatar, Flex } from 'theme-ui'
 import { useColorMode } from 'theme-ui'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import { useState, useEffect } from 'react'
 
 const NavButton = ({ sx, ...props }) => (
   <IconButton
@@ -64,6 +65,15 @@ const ColorSwitcher = props => {
 export default () => {
   const [mode] = useColorMode()
   const router = useRouter()
+
+  const [session, setSession] = useState(null)
+  useEffect(() => {
+    fetch('/api/auth/me/')
+    .then(r => r.json())
+    .then(data => setSession(data))
+    .catch(() => setSession({ slackId: null }))
+  }, [])
+
   const home = router.pathname === '/'
   return (
     <Box
@@ -96,6 +106,31 @@ export default () => {
           <GitHub size={24} />
         </NavButton>
         <ColorSwitcher />
+        {session?.slackId ? (
+          <Flex sx={{alignItems: 'center', gap: 2, ml: 2}}>
+            <NavButton
+              as="a"
+              href="/api/auth/logout/"
+              sx={{ fontSize: 1, width: 'auto', px: 2 }}
+            >
+              Sign Out
+            </NavButton>
+            <Avatar
+              src={`https://cachet.dunkirk.sh/users/${session.slackId}/r`}
+              alt="Your Slack Avatar"
+              size={28}
+              sx={{hieght:28, width:28, borderRadius:'circle'}}
+            />
+          </Flex>
+        ): session != null ? (
+          <NavButton
+            as="a"
+            href={`/api/auth/login/?returnTo=${encodeURIComponent(router.asPath)}`}
+            sx={{ml:2,fontSize:1,width:'auto',px:2}}
+          >
+            Log in
+          </NavButton>
+        ): null}
       </Container>
     </Box>
   )

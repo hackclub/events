@@ -19,6 +19,7 @@ import tt from 'tinytime'
 import ReactPlayer from 'react-player'
 import { useState, useEffect } from 'react'
 
+import Rsvp from '../components/rsvp'
 import AMARsvp from '../components/ama-rsvp'
 import { getEvents } from '../lib/data'
 import { find, map } from 'lodash'
@@ -203,7 +204,7 @@ const Page = ({ event }) => (
             </Button>
           </Flex>
         )}
-        {/* !event.ama && <RSVP {...event} /> */}
+        { !event.ama && <Rsvp event={event} /> }
       </Box>
     </Container>
     {event.ama && (
