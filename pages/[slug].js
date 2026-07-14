@@ -21,6 +21,7 @@ import { useState, useEffect } from 'react'
 
 import Rsvp from '../components/rsvp'
 import AMARsvp from '../components/ama-rsvp'
+import ExternalRsvp from '../components/external-rsvp'
 import { getEvents } from '../lib/data'
 import { find, map } from 'lodash'
 import { parse } from 'marked'
@@ -204,7 +205,11 @@ const Page = ({ event }) => (
             </Button>
           </Flex>
         )}
-        { !event.ama && <Rsvp event={event} /> }
+        { !event.ama && (
+          event.rsvpFormUrl
+            ? <ExternalRsvp event={event} />
+            : <Rsvp event={event} />
+        )}
       </Box>
     </Container>
     {event.ama && (
