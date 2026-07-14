@@ -1,22 +1,24 @@
-import { Button, Link } from 'theme-ui'
+import { Button } from 'theme-ui'
 
 const ExternalRsvp = ({ event }) => {
+  if (!event.rsvpFormUrl?.startsWith('https://')) return null
+
   return (
-    <Link href={event.rsvpFormUrl} target="_blank" rel="noopener noreferrer">
-      <Button
-        as="button"
-        type="button"
-        sx={{
-          bg: 'cyan',
-          color: 'white',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 1,
-        }}
-      >
-        RSVP
-      </Button>
-    </Link>
+    <Button
+      as="a"
+      href={event.rsvpFormUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      sx={{
+        bg: 'cyan',
+        color: 'white',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 1
+      }}
+    >
+      RSVP
+    </Button>
   )
 }
 
