@@ -94,6 +94,13 @@ export default () => {
       .then(r => r.json())
       .then(data => setSession(data))
       .catch(() => setSession({ slackId: null }))
+
+  const [session, setSession] = useState(null)
+  useEffect(() => {
+    fetch('/api/auth/me/')
+    .then(r => r.json())
+    .then(data => setSession(data))
+    .catch(() => setSession({ slackId: null }))
   }, [])
 
   const home = router.pathname === '/'
@@ -130,6 +137,7 @@ export default () => {
         <ColorSwitcher />
         {session?.slackId ? (
           <Flex sx={{ alignItems: 'center', gap: 2, ml: 2 }}>
+          <Flex sx={{alignItems: 'center', gap: 2, ml: 2}}>
             <NavButton
               as="a"
               href="/api/auth/logout/"
@@ -155,6 +163,18 @@ export default () => {
             Log in
           </NavButton>
         ) : null}
+              sx={{hieght:28, width:28, borderRadius:'circle'}}
+            />
+          </Flex>
+        ): session != null ? (
+          <NavButton
+            as="a"
+            href={`/api/auth/login/?returnTo=${encodeURIComponent(router.asPath)}`}
+            sx={{ml:2,fontSize:1,width:'auto',px:2}}
+          >
+            Log in
+          </NavButton>
+        ): null}
       </Container>
     </Box>
   )
