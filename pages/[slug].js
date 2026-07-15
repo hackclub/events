@@ -265,7 +265,6 @@ const Page = ({ event }) => (
             </Button>
           </Flex>
         )}
-        {/* !event.ama && <RSVP {...event} /> */}
       </Box>
     </Container>
     {(event.youtube || event.ama) && (
