@@ -1,9 +1,17 @@
-import { ArrowLeft, Moon, GitHub } from 'react-feather'
-import { Box, Container, IconButton, Image, Link as A, Avatar, Flex } from 'theme-ui'
+import { ArrowLeft, Moon, Sun, GitHub } from 'react-feather'
+import {
+  Box,
+  Container,
+  IconButton,
+  Image,
+  Link as A,
+  Avatar,
+  Flex
+} from 'theme-ui'
 import { useColorMode } from 'theme-ui'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 const NavButton = ({ sx, ...props }) => (
   <IconButton
@@ -11,6 +19,8 @@ const NavButton = ({ sx, ...props }) => (
     sx={{
       color: 'primary',
       borderRadius: 'circle',
+      cursor: 'pointer',
+      m: 2,
       transition: 'box-shadow .125s ease-in-out',
       ':hover,:focus': {
         boxShadow: '0 0 0 2px',
@@ -51,13 +61,26 @@ const Flag = () => (
 
 const ColorSwitcher = props => {
   const [mode, setMode] = useColorMode()
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => {
+    setMounted(true)
+  }, [])
   return (
     <NavButton
       {...props}
       onClick={() => setMode(mode === 'dark' ? 'light' : 'dark')}
       title="Reverse color scheme"
+      sx={{
+        ...props.sx,
+        transition: 'transform 0.3s ease,box-shadow .125s ease-in-out'
+      }}
     >
-      <Moon size={24} />
+      {mounted &&
+        (mode === 'dark' ? (
+          <Sun size={24} style={{ transition: 'transform 0.3s ease' }} />
+        ) : (
+          <Moon size={24} style={{ transition: 'transform 0.3s ease' }} />
+        ))}
     </NavButton>
   )
 }
@@ -65,13 +88,12 @@ const ColorSwitcher = props => {
 export default () => {
   const [mode] = useColorMode()
   const router = useRouter()
-
   const [session, setSession] = useState(null)
   useEffect(() => {
     fetch('/api/auth/me/')
-    .then(r => r.json())
-    .then(data => setSession(data))
-    .catch(() => setSession({ slackId: null }))
+      .then(r => r.json())
+      .then(data => setSession(data))
+      .catch(() => setSession({ slackId: null }))
   }, [])
 
   const home = router.pathname === '/'
@@ -107,7 +129,7 @@ export default () => {
         </NavButton>
         <ColorSwitcher />
         {session?.slackId ? (
-          <Flex sx={{alignItems: 'center', gap: 2, ml: 2}}>
+          <Flex sx={{ alignItems: 'center', gap: 2, ml: 2 }}>
             <NavButton
               as="a"
               href="/api/auth/logout/"
@@ -119,18 +141,18 @@ export default () => {
               src={`https://cachet.dunkirk.sh/users/${session.slackId}/r`}
               alt="Your Slack Avatar"
               size={28}
-              sx={{hieght:28, width:28, borderRadius:'circle'}}
+              sx={{ height: 28, width: 28, borderRadius: 'circle' }}
             />
           </Flex>
-        ): session != null ? (
+        ) : session != null ? (
           <NavButton
             as="a"
             href={`/api/auth/login/?returnTo=${encodeURIComponent(router.asPath)}`}
-            sx={{ml:2,fontSize:1,width:'auto',px:2}}
+            sx={{ ml: 2, fontSize: 1, width: 'auto', px: 2 }}
           >
             Log in
           </NavButton>
-        ): null}
+        ) : null}
       </Container>
     </Box>
   )
