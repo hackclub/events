@@ -11,7 +11,7 @@ const AttendeeRow = ({ attendee }) => {
   return (
     <Flex sx={{ alignItems: 'center', gap: 3, py: 2 }}>
       <Avatar
-        src={`https://cachet.dunkirk.sh/users/${attendee.slackId}/r`}
+        src={`https://cachet.hackclub.com/users/${attendee.slackId}/r`}
         alt={displayName}
         sx={{ height: 36, width: 36, flexShrink: 0, borderRadius: 'circle' }}
       />

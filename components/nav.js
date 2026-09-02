@@ -116,7 +116,7 @@ export default () => {
               Sign Out
             </NavButton>
             <Avatar
-              src={`https://cachet.dunkirk.sh/users/${session.slackId}/r`}
+              src={`https://cachet.hackclub.com/users/${session.slackId}/r`}
               alt="Your Slack Avatar"
               size={28}
               sx={{hieght:28, width:28, borderRadius:'circle'}}
