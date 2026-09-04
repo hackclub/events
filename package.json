@@ -8,7 +8,8 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "test": "vitest run"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -34,6 +35,8 @@
   },
   "devDependencies": {
     "baseline-browser-mapping": "^2.10.29",
-    "prettier": "^3.8.3"
+    "prettier": "^3.8.3",
+    "vite": "^8.2.2",
+    "vitest": "^5.0.0"
   }
 }
