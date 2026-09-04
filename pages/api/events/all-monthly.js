@@ -1,13 +1,5 @@
-import { filter } from 'lodash'
 import { getEvents } from '../../../lib/data'
-import { groupBy } from 'lodash'
+import { byMonth, withTags } from '../../../lib/calendar'
 
-export default async (req, res) => {
-  let events = await getEvents()
-  if (req.query.tags) {
-    const tags = req.query.tags.split(',')
-    events = filter(events, e => tags.some(t => e.tags?.includes(t)))
-  }
-  const months = groupBy(events, e => e.start.substring(0, 7))
-  res.json(months)
-}
+export default async (req, res) =>
+  res.json(byMonth(withTags(await getEvents(), req.query.tags)))
