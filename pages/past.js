@@ -2,6 +2,8 @@ import { Container, Box, Heading } from 'theme-ui'
 import Month from '../components/month'
 import { getEvents } from '../lib/data'
 import { byMonth, past } from '../lib/calendar'
+import { toCard } from '../lib/event-card'
+import { mapValues } from 'lodash'
 
 export default ({ months }) => (
   <>
@@ -31,15 +33,9 @@ export default ({ months }) => (
 )
 
 export const getStaticProps = async () => {
-  const months = byMonth(past(await getEvents()))
-
-  // getStaticProps cannot serialise undefined.
-  Object.keys(months).forEach(key => {
-    months[key] = months[key].map(event => ({
-      ...event,
-      desc: event.desc ?? null
-    }))
-  })
+  const months = mapValues(byMonth(past(await getEvents())), events =>
+    events.map(toCard)
+  )
 
   return { props: { months }, revalidate: 5 }
 }
