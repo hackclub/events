@@ -4,3 +4,10 @@ node_modules
 .DS_Store
 .env
 .vercel
+.yarn/*
+!.yarn/patches
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*

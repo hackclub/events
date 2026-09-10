@@ -4,6 +4,7 @@
   "author": "Lachlan Campbell <lachlan@hackclub.com>",
   "license": "MIT",
   "private": true,
+  "packageManager": "yarn@4.16.0",
   "scripts": {
     "dev": "next",
     "build": "next build",
