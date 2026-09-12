@@ -1,7 +1,7 @@
 import { Container, Box, Heading } from 'theme-ui'
 import Month from '../components/month'
 import { getEvents } from '../lib/data'
-import { filter, groupBy } from 'lodash'
+import { byMonth, past } from '../lib/calendar'
 
 export default ({ months }) => (
   <>
@@ -31,21 +31,15 @@ export default ({ months }) => (
 )
 
 export const getStaticProps = async () => {
-  let events = await getEvents()
-  // Select events from past months
-  events = filter(
-    events,
-    e =>
-      new Date(new Date(e.end.substring(0, 7)).toISOString().substring(0, 7)) <
-      new Date(new Date().toISOString().substring(0, 7))
-  )
-  let months = groupBy(events, e => e.start.substring(0, 7))
+  const months = byMonth(past(await getEvents()))
 
-  Object.keys(months).forEach(
-    (k, i) =>
-      (months[k] = months[k].map(event => {
-        return { ...event, desc: event.desc ?? null }
-      }))
-  )
+  // getStaticProps cannot serialise undefined.
+  Object.keys(months).forEach(key => {
+    months[key] = months[key].map(event => ({
+      ...event,
+      desc: event.desc ?? null
+    }))
+  })
+
   return { props: { months }, revalidate: 5 }
 }
