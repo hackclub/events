@@ -3,7 +3,7 @@ import { Box, Container, IconButton, Image, Link as A, Avatar, Flex } from 'them
 import { useColorMode } from 'theme-ui'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import { useState, useEffect } from 'react'
+import { useSession } from './session-context'
 
 const NavButton = ({ sx, ...props }) => (
   <IconButton
@@ -66,13 +66,7 @@ export default () => {
   const [mode] = useColorMode()
   const router = useRouter()
 
-  const [session, setSession] = useState(null)
-  useEffect(() => {
-    fetch('/api/auth/me/')
-    .then(r => r.json())
-    .then(data => setSession(data))
-    .catch(() => setSession({ slackId: null }))
-  }, [])
+  const { session, capabilities } = useSession()
 
   const home = router.pathname === '/'
   return (
@@ -97,11 +91,18 @@ export default () => {
         }}
       >
         {!home ? <BackButton /> : <Flag />}
+        <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center' }}>
+          {capabilities?.canSubmit && <Link href="/submit">Submit</Link>}
+          {session?.slackId && <Link href="/my-events">My events</Link>}
+          {capabilities?.canReview && <Link href="/review">Review</Link>}
+          {capabilities?.canReview && (
+            <Link href="/organisers">Organisers</Link>
+          )}
+        </Box>
         <NavButton
           as="a"
           href="https://github.com/hackclub/events"
           aria-label="View source code on GitHub"
-          sx={{ ml: 'auto' }}
         >
           <GitHub size={24} />
         </NavButton>
