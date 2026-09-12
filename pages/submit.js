@@ -1,90 +1,29 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Head from 'next/head'
+import Link from 'next/link'
 import Meta from '@hackclub/meta'
-import {
-  Box,
-  Button,
-  Container,
-  Checkbox,
-  Field,
-  Heading,
-  Label,
-  Spinner,
-  Text,
-  Textarea
-} from 'theme-ui'
+import { Box, Button, Container, Heading, Spinner, Text } from 'theme-ui'
 import { useRouter } from 'next/router'
-import { EVENT_TAGS, MAX_DESCRIPTION, MAX_TITLE } from '../lib/event-submission'
-
-const empty = {
-  title: '',
-  description: '',
-  start: '',
-  end: '',
-  eventLink: '',
-  rsvpFormUrl: '',
-  tags: []
-}
-
-// datetime-local gives "2026-10-01T17:00" with no zone. Parsing that on the
-// server would use the server's timezone, so resolve it here where the value
-// was actually entered.
-const toISO = value => {
-  if (!value) return ''
-  const date = new Date(value)
-  return Number.isNaN(date.getTime()) ? '' : date.toISOString()
-}
-
-const Note = ({ children }) => (
-  <Text as="p" sx={{ fontSize: 0, color: 'muted', mt: 1 }}>
-    {children}
-  </Text>
-)
-
-const Error = ({ children }) =>
-  children ? (
-    <Text as="p" sx={{ fontSize: 0, color: 'red', mt: 1 }}>
-      {children}
-    </Text>
-  ) : null
+import AuthGate from '../components/auth-gate'
+import EventForm from '../components/event-form'
+import { useSession } from '../components/session-context'
+import { EMPTY_EVENT_FORM, payloadFromForm } from '../lib/event-form'
 
 const SubmitPage = () => {
   const router = useRouter()
-  const [session, setSession] = useState(null)
-  const [form, setForm] = useState(empty)
+  const { session, capabilities, loading } = useSession()
   const [errors, setErrors] = useState({})
   const [status, setStatus] = useState('idle')
+  const [formKey, setFormKey] = useState(0)
 
-  useEffect(() => {
-    fetch('/api/auth/me/')
-      .then(r => r.json())
-      .then(setSession)
-      .catch(() => setSession({ slackId: null }))
-  }, [])
-
-  const set = (name, value) => setForm(prev => ({ ...prev, [name]: value }))
-
-  const toggleTag = tag =>
-    setForm(prev => ({
-      ...prev,
-      tags: prev.tags.includes(tag)
-        ? prev.tags.filter(t => t !== tag)
-        : [...prev.tags, tag]
-    }))
-
-  const onSubmit = async event => {
-    event.preventDefault()
+  const onSubmit = async form => {
     setStatus('submitting')
     setErrors({})
 
     const res = await fetch('/api/events/', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({
-        ...form,
-        start: toISO(form.start),
-        end: toISO(form.end)
-      })
+      body: JSON.stringify(payloadFromForm(form))
     }).catch(() => null)
 
     if (!res) {
@@ -109,7 +48,7 @@ const SubmitPage = () => {
     setStatus('done')
   }
 
-  if (session === null) {
+  if (loading) {
     return (
       <Box sx={{ textAlign: 'center', py: 5 }}>
         <Spinner size={48} color="primary" />
@@ -117,21 +56,27 @@ const SubmitPage = () => {
     )
   }
 
-  if (!session.slackId) {
+  if (!session?.slackId) {
+    return (
+      <AuthGate
+        title="Submit an event"
+        body="Sign in with your Hack Club Slack account to propose an event."
+        returnTo="/submit"
+      />
+    )
+  }
+
+  if (!capabilities.canSubmit) {
     return (
       <Container sx={{ maxWidth: 'copy', py: [4, 5], textAlign: 'center' }}>
         <Heading as="h1" variant="title" sx={{ mb: 2 }}>
-          Submit an event
+          Submitting is invite-only for now
         </Heading>
-        <Text as="p" variant="subtitle" sx={{ mb: [3, 4] }}>
-          Sign in with your Hack Club Slack account to propose an event.
+        <Text as="p" variant="subtitle">
+          Events are submitted by Hack Club staff and a handful of trusted
+          organisers. If you would like to run one, ask in #community and
+          someone on the events team can add you.
         </Text>
-        <Button
-          as="a"
-          href={`/api/auth/login/?returnTo=${encodeURIComponent('/submit')}`}
-        >
-          Sign in with Slack
-        </Button>
       </Container>
     )
   }
@@ -143,23 +88,27 @@ const SubmitPage = () => {
           Sent for review
         </Heading>
         <Text as="p" variant="subtitle">
-          Your event has been sent to the events team. You’ll get a Slack
-          message when it’s approved, and it’ll appear on the site then.
+          Your event has been sent to the events team. You’ll get a Slack message
+          when it’s approved, and it’ll appear on the site then.
         </Text>
-        <Button
-          sx={{ mt: [3, 4] }}
-          onClick={() => {
-            setForm(empty)
-            setStatus('idle')
-          }}
-        >
-          Submit another
-        </Button>
+        <Box sx={{ mt: [3, 4], display: 'flex', gap: 3, justifyContent: 'center' }}>
+          <Button
+            onClick={() => {
+              setFormKey(k => k + 1)
+              setStatus('idle')
+            }}
+          >
+            Submit another
+          </Button>
+          <Link href="/my-events" passHref legacyBehavior>
+            <Button as="a" variant="outline">
+              View your events
+            </Button>
+          </Link>
+        </Box>
       </Container>
     )
   }
-
-  const busy = status === 'submitting'
 
   return (
     <>
@@ -178,115 +127,14 @@ const SubmitPage = () => {
         </Text>
       </Box>
 
-      <Container
-        as="form"
+      <EventForm
+        key={formKey}
+        initialValues={EMPTY_EVENT_FORM}
+        errors={errors}
+        busy={status === 'submitting'}
+        submitLabel="Send for review"
         onSubmit={onSubmit}
-        sx={{ maxWidth: 'copy', py: [3, 4], display: 'grid', gap: 3 }}
-      >
-        <Box>
-          <Field
-            label="Title"
-            name="title"
-            value={form.title}
-            maxLength={MAX_TITLE}
-            onChange={e => set('title', e.target.value)}
-            required
-          />
-          <Error>{errors.title}</Error>
-        </Box>
-
-        <Box>
-          <Label htmlFor="description">Description</Label>
-          <Textarea
-            id="description"
-            name="description"
-            rows={6}
-            maxLength={MAX_DESCRIPTION}
-            value={form.description}
-            onChange={e => set('description', e.target.value)}
-            required
-          />
-          <Note>Markdown works. Slack :emoji: shortcodes do too.</Note>
-          <Error>{errors.description}</Error>
-        </Box>
-
-        <Box sx={{ display: 'grid', gap: 3, gridTemplateColumns: [null, '1fr 1fr'] }}>
-          <Box>
-            <Field
-              label="Starts"
-              name="start"
-              type="datetime-local"
-              value={form.start}
-              onChange={e => set('start', e.target.value)}
-              required
-            />
-            <Note>Your local time.</Note>
-            <Error>{errors.start}</Error>
-          </Box>
-          <Box>
-            <Field
-              label="Ends"
-              name="end"
-              type="datetime-local"
-              value={form.end}
-              onChange={e => set('end', e.target.value)}
-              required
-            />
-            <Error>{errors.end}</Error>
-          </Box>
-        </Box>
-
-        <Box>
-          <Field
-            label="Where is it? (optional)"
-            name="eventLink"
-            type="url"
-            placeholder="https://app.slack.com/huddle/..."
-            value={form.eventLink}
-            onChange={e => set('eventLink', e.target.value)}
-          />
-          <Note>Defaults to the #community huddle if you leave this blank.</Note>
-          <Error>{errors.eventLink}</Error>
-        </Box>
-
-        <Box>
-          <Field
-            label="External RSVP link (optional)"
-            name="rsvpFormUrl"
-            type="url"
-            placeholder="https://..."
-            value={form.rsvpFormUrl}
-            onChange={e => set('rsvpFormUrl', e.target.value)}
-          />
-          <Note>
-            If set, the RSVP button links here instead of collecting RSVPs.
-          </Note>
-          <Error>{errors.rsvpFormUrl}</Error>
-        </Box>
-
-        <Box>
-          <Text as="span" sx={{ fontWeight: 'bold', fontSize: 1 }}>
-            Tags
-          </Text>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3, mt: 2 }}>
-            {EVENT_TAGS.map(tag => (
-              <Label key={tag} sx={{ width: 'auto', alignItems: 'center' }}>
-                <Checkbox
-                  checked={form.tags.includes(tag)}
-                  onChange={() => toggleTag(tag)}
-                />
-                {tag.replace('-', ' ')}
-              </Label>
-            ))}
-          </Box>
-        </Box>
-
-        <Error>{errors.form}</Error>
-
-        <Button type="submit" disabled={busy} sx={{ justifySelf: 'start' }}>
-          {busy ? 'Sending…' : 'Send for review'}
-        </Button>
-      </Container>
+      />
     </>
   )
 }
