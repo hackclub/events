@@ -1,7 +1,7 @@
 import { Container, Box, Text, Heading, Button, Link as A } from 'theme-ui'
 import Link from 'next/link'
 import Month from '../components/month'
-import { Activity, SkipBack } from 'react-feather'
+import { Activity, Plus, SkipBack } from 'react-feather'
 import { getUpcomingMonthly } from './api/events/upcoming-monthly'
 
 export default ({ months }) => (
@@ -32,8 +32,17 @@ export default ({ months }) => (
         <Month key={key} month={key} events={months[key]} />
       ))}
       {Object.keys(months).length == 0 && (
-        <Box sx={{ textAlign: 'center' }}>
-          <h1 sx={{ fontWeight: '400' }}>🚧 More events coming soon.</h1>
+        <Box sx={{ textAlign: 'center', px: 3, py: [3, 4] }}>
+          <Heading as="h2" variant="headline" sx={{ mb: 2 }}>
+            Nothing coming up just yet.
+          </Heading>
+          <Text as="p" variant="subtitle" sx={{ mb: [3, 4] }}>
+            Events are run by Hack Clubbers. If you’ve got an idea, it can be
+            on here in a couple of minutes.
+          </Text>
+          <Link href="/submit">
+            <Button>Submit an event</Button>
+          </Link>
         </Box>
       )}
       <Box
@@ -43,6 +52,12 @@ export default ({ months }) => (
           pb: [4, 5]
         }}
       >
+        <Link href="/submit">
+          <Button variant="outline" sx={{ color: 'secondary', mx: 2 }}>
+            <Plus />
+            Submit an event
+          </Button>
+        </Link>
         <Link href="/past">
           <Button variant="outline" sx={{ color: 'secondary', mx: 2 }}>
             <SkipBack />

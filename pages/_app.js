@@ -5,10 +5,12 @@ import '@hackclub/theme/fonts/reg-bold.css'
 import theme from '@hackclub/theme'
 import { ThemeUIProvider } from 'theme-ui'
 import Nav from '../components/nav'
+import { SessionProvider } from '../components/session-context'
 import { Analytics } from "@vercel/analytics/next"
 
 const App = ({ Component, pageProps }) => (
   <ThemeUIProvider theme={theme}>
+    <SessionProvider>
     <Meta
       as={Head}
       name="Hack Club"
@@ -19,6 +21,7 @@ const App = ({ Component, pageProps }) => (
     <Nav />
     <Component {...pageProps} />
     <Analytics />
+    </SessionProvider>
   </ThemeUIProvider>
 )
 

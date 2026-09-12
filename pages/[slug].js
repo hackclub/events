@@ -11,7 +11,8 @@ import {
   Spinner,
   Text
 } from 'theme-ui'
-import { Calendar, Download, Youtube } from 'react-feather'
+import { Calendar, Download, Video, Youtube } from 'react-feather'
+import { Message } from 'theme-ui'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 import Meta from '@hackclub/meta'
@@ -22,11 +23,21 @@ import { useState, useEffect } from 'react'
 import Rsvp from '../components/rsvp'
 import AMARsvp from '../components/ama-rsvp'
 import ExternalRsvp from '../components/external-rsvp'
-import { getEvents } from '../lib/data'
+import { getEvents, getPublicEvents } from '../lib/data'
+import { isHappeningNow } from '../lib/calendar'
 import { find, map } from 'lodash'
 import { parse } from 'marked'
+import DOMPurify from 'isomorphic-dompurify'
 
 const fullDate = event => tt('{MM} {DD}, {YYYY}').render(new Date(event.start))
+
+const httpsOnly = url => {
+  try {
+    return new URL(url).protocol === 'https:' ? url : null
+  } catch {
+    return null
+  }
+}
 const past = dt => new Date(dt) < new Date()
 
 const ICSdate = dt =>
@@ -183,12 +194,40 @@ const Page = ({ event }) => (
 
         <EventDescription html={event.html} />
 
-        {!past(event.start) && (
+        {event.cancelled && (
+          <Message variant="alert" sx={{ mb: [3, 4] }}>
+            <Text as="span" sx={{ fontWeight: 'bold' }}>
+              This event was cancelled.
+            </Text>
+            {event.cancellationReason && (
+              <Text as="p" sx={{ mt: 1, whiteSpace: 'pre-wrap' }}>
+                {event.cancellationReason}
+              </Text>
+            )}
+          </Message>
+        )}
+
+        {event.live && httpsOnly(event.eventLink) && (
           <Flex sx={{ gap: 2, flexWrap: 'wrap', mb: [3, 4] }}>
             <Button
               as="a"
               target="_blank"
-              href={event.cal}
+              rel="noopener noreferrer"
+              href={httpsOnly(event.eventLink)}
+              sx={{ bg: 'green' }}
+            >
+              <Video />
+              Join now
+            </Button>
+          </Flex>
+        )}
+
+        {!past(event.start) && !event.cancelled && (
+          <Flex sx={{ gap: 2, flexWrap: 'wrap', mb: [3, 4] }}>
+            <Button
+              as="a"
+              target="_blank"
+              href={httpsOnly(event.cal) || undefined}
               sx={{ bg: 'cyan' }}
             >
               <Calendar />
@@ -400,7 +439,7 @@ export default props => {
 }
 
 export const getStaticPaths = async () => {
-  const events = await getEvents()
+  const events = await getPublicEvents()
   const slugs = map(events, 'slug')
   const paths = slugs.map(slug => ({ params: { slug } }))
   return { paths, fallback: true }
@@ -408,9 +447,14 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = async ({ params }) => {
   const { slug } = params
-  const events = await getEvents()
+  const events = await getPublicEvents()
   const event = find(events, { slug })
-  event.html = await parse(event.desc)
+
+  if (!event) return { notFound: true, revalidate: 2 }
+
+  event.html = DOMPurify.sanitize(await parse(event.desc ?? ''))
   event.desc ??= null
+  event.live = isHappeningNow(event)
+
   return { props: { event }, revalidate: 2 }
 }
