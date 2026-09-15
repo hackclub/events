@@ -11,7 +11,14 @@ import {
   Spinner,
   Text
 } from 'theme-ui'
-import { Calendar, Download, Youtube } from 'react-feather'
+import {
+  Calendar,
+  Download,
+  Youtube,
+  XCircle,
+  Users,
+  AlertTriangle
+} from 'react-feather'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 import Meta from '@hackclub/meta'
@@ -41,7 +48,11 @@ const makeICS = event => {
   const location = calUrl?.searchParams.get('location') || ''
 
   const escICS = str =>
-    str.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n')
+    str
+      .replace(/\\/g, '\\\\')
+      .replace(/;/g, '\\;')
+      .replace(/,/g, '\\,')
+      .replace(/\n/g, '\\n')
 
   const lines = [
     'BEGIN:VCALENDAR',
@@ -76,6 +87,27 @@ const Page = ({ event }) => (
         event.avatar
       }`}
     />
+    {event.cancelled && (
+      <Box sx={{ bg: 'red', color: 'white', py: 3, textAlign: 'center' }}>
+        <Container>
+          <Flex sx={{ alignItems: 'center', justifyContent: 'center', gap: 2 }}>
+            <AlertTriangle size={32} />
+            <Heading
+              as="h2"
+              variant="headline"
+              sx={{ color: 'white', m: 2, fontSize: [3, 4] }}
+            >
+              This event has been cancelled
+            </Heading>
+          </Flex>
+          {event.rawCancellation && (
+            <Text sx={{ mt: 2, opacity: 0.9, fontSize: 2 }}>
+              {event.rawCancellation}
+            </Text>
+          )}
+        </Container>
+      </Box>
+    )}
     <Box as="header" sx={{ bg: 'sheet' }}>
       <Container sx={{ textAlign: 'center', pt: [3, 4], pb: [3, 4] }}>
         <Heading as="h1" variant="title" sx={{ mb: 2 }}>
@@ -155,8 +187,43 @@ const Page = ({ event }) => (
           {tt('{h}:{mm} {a}').render(new Date(event.start))}–
           {tt('{h}:{mm} {a}').render(new Date(event.end))}
         </Text>
+        {event.interestCount > 0 && (
+          <Flex
+            sx={{ alignItems: 'center', gap: 1, color: 'muted', mt: 1, mb: 2 }}
+          >
+            <Users size={15} />
+            <Text sx={{ fontWeight: 'bold' }}>
+              {event.interestCount}{' '}
+              {event.interestCount === 1 ? 'person is' : 'people are'}{' '}
+              interested
+            </Text>
+          </Flex>
+        )}
 
-        {event.tags?.length > 0 && (
+        {event.cancelled && (
+          <Flex sx={{ gap: 1, flexWrap: 'wrap', mb: [2, 3] }}>
+            <Text
+              as="span"
+              sx={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '4px',
+                fontSize: 0,
+                fontWeight: 'bold',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
+                bg: 'red',
+                color: 'white',
+                px: 2,
+                py: '2px',
+                borderRadius: 'default'
+              }}
+            >
+              <XCircle /> CANCELLED
+            </Text>
+          </Flex>
+        )}
+        {event.tags?.length > 0 && !event.cancelled && (
           <Flex sx={{ gap: 1, flexWrap: 'wrap', mb: [2, 3] }}>
             {event.tags.map(tag => (
               <Text
@@ -183,14 +250,9 @@ const Page = ({ event }) => (
 
         <EventDescription html={event.html} />
 
-        {!past(event.start) && (
+        {!past(event.start) && !event.cancelled && (
           <Flex sx={{ gap: 2, flexWrap: 'wrap', mb: [3, 4] }}>
-            <Button
-              as="a"
-              target="_blank"
-              href={event.cal}
-              sx={{ bg: 'cyan' }}
-            >
+            <Button as="a" target="_blank" href={event.cal} sx={{ bg: 'cyan' }}>
               <Calendar />
               Add to Google Calendar
             </Button>
@@ -205,20 +267,15 @@ const Page = ({ event }) => (
             </Button>
           </Flex>
         )}
-        { !event.ama && (
-          event.rsvpFormUrl
-            ? <ExternalRsvp event={event} />
-            : <Rsvp event={event} />
-        )}
       </Box>
     </Container>
-    {event.ama && (
+    {(event.youtube || event.ama) && (
       <Box
         as="section"
         sx={
           past(event.start)
             ? {
-                bg: event.youtube ? 'dark' : 'background',
+                bg: 'background',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center'
@@ -227,19 +284,18 @@ const Page = ({ event }) => (
         }
         py={[4, 5]}
       >
-        {past(event.start) || event.youtube ? (
+        {past(event.start) && event.youtube && (
           <>
-            {event.youtube && (
-              <Embed>
-                <ReactPlayer url={event.youtube} width="100%" height="100%" />
-              </Embed>
-            )}
+            <Embed>
+              <ReactPlayer url={event.youtube} />
+            </Embed>
             <Flex sx={{ justifyContent: 'center', px: 3, mt: [3, 4] }}>
               <Subscribe />
             </Flex>
           </>
-        ) : null}
-        {!past(event.start) && (
+        )}
+
+        {!past(event.start) && event.ama && (
           <Container
             as="section"
             sx={{
@@ -263,6 +319,13 @@ const Page = ({ event }) => (
               </Text>
               <Subscribe />
             </Card>
+          </Container>
+        )}
+        {!past(event.start) && !event.ama && event.youtube && (
+          <Container sx={{ textAlign: 'center' }}>
+            <Text variant="subtitle">
+              This event will be livestreamed on Youtube
+            </Text>
           </Container>
         )}
       </Box>
@@ -410,6 +473,9 @@ export const getStaticProps = async ({ params }) => {
   const { slug } = params
   const events = await getEvents()
   const event = find(events, { slug })
+  if (!event) {
+    return { notFound: true }
+  }
   event.html = await parse(event.desc)
   event.desc ??= null
   return { props: { event }, revalidate: 2 }
