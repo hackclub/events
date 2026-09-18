@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Repeat } from 'react-feather'
 import { Box, Button, Text, Flex, Avatar, Divider } from 'theme-ui'
 
 const AttendeeRow = ({ attendee }) => {
@@ -48,6 +49,7 @@ const AttendeeRow = ({ attendee }) => {
 const Rsvp = ({ event }) => {
   const [session, setSession] = useState(null)
   const [attending, setAttending] = useState(false)
+  const [following, setFollowing] = useState(false)
   const [count, setCount] = useState(event.interestCount || 0)
   const [loading, setLoading] = useState(false)
   const [attendees, setAttendees] = useState(null)
@@ -148,24 +150,26 @@ const Rsvp = ({ event }) => {
     .then(data => {
         setCount(data.InterestCount ?? count)
         setAttending(data.attending || false)
+        setFollowing(Boolean(data.following))
         if (creator) setAttendees(data.attendees || [])
       }).catch(() => {})
   }, [session])
 
-  const handleRsvp = async () => {
+  const handleRsvp = async (scope = 'this') => {
     if (!session?.slackId || loading) return
     setLoading(true)
-    const newAttending = !attending
+    const newAttending = scope === 'all' ? !following : !attending
     try {
       const res = await fetch(`/api/events/${event.id}/rsvp/`, {
         method: 'PUT',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ attending: newAttending }),
+        body: JSON.stringify({ attending: newAttending, scope }),
       })
       const data = await res.json()
       if (res.ok) {
         setAttending(newAttending)
         setCount(data.InterestCount)
+        setFollowing(Boolean(data.following))
         if (isCreator) {
           const rsvpRes = await fetch(`/api/events/${event.id}/rsvps/`)
           const rsvpData = await rsvpRes.json()
@@ -208,7 +212,7 @@ const Rsvp = ({ event }) => {
     <Box sx={{ mt: 3 }}>
       <Flex sx={{ gap: 2, flexWrap: 'wrap', alignItems: 'center', mb: 2 }}>
         <Button
-          onClick={!session?.slackId ? undefined : handleRsvp}
+          onClick={!session?.slackId ? undefined : () => handleRsvp('this')}
           as={!session?.slackId ? 'a' : 'button'}
           href={!session?.slackId ? `/api/auth/login/?returnTo=${encodeURIComponent(`/${event.slug}`)}` : undefined}
           disabled={loading}
@@ -232,10 +236,28 @@ const Rsvp = ({ event }) => {
             ? '✓ Going'
             : 'RSVP'}
         </Button>
+        {event.seriesId && session?.slackId && (
+          <Button
+            variant="outline"
+            onClick={() => handleRsvp('all')}
+            disabled={loading}
+            sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+          >
+            <Repeat size={16} />
+            {following ? 'Following every date' : 'Follow every date'}
+          </Button>
+        )}
         <Text sx={{ color: 'muted', fontSize: 1 }}>
           {count} {count === 1 ? 'person' : 'people'} going
         </Text>
       </Flex>
+      {event.seriesId && session?.slackId && (
+        <Text as="p" sx={{ color: 'muted', fontSize: 0, mb: 2 }}>
+          {following
+            ? 'You’ll get a reminder before every date in this series.'
+            : 'RSVP covers this date. Follow to hear about all of them.'}
+        </Text>
+      )}
       {isCreator && attendees !== null && (
         <Box sx={{ mt: 3 }}>
           <Divider sx={{ mb: 3 }} />
