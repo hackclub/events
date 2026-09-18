@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { scrollArea } from './panel'
 import { Box, Flex, Label, Text } from 'theme-ui'
 import { Plus, X } from 'react-feather'
 
@@ -263,7 +264,7 @@ const TagInput = ({ value = [], knownTags = [], onChange, id = 'tags' }) => {
             borderRadius: 'default',
             boxShadow: 'elevated',
             maxHeight: 220,
-            overflowY: 'auto'
+            ...scrollArea
           }}
         >
           {options.length === 0 && (
