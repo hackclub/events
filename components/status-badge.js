@@ -1,8 +1,10 @@
 import { Badge } from 'theme-ui'
-import { STATUS_META, statusOf } from '../lib/event-status'
+import { hasEnded, STATUS_META, statusOf } from '../lib/event-status'
 
 const StatusBadge = ({ event, ...props }) => {
-  const meta = STATUS_META[statusOf(event)]
+  const status = statusOf(event)
+  const meta =
+    STATUS_META[status === 'approved' && hasEnded(event) ? 'ended' : status]
   if (!meta) return null
 
   return (
