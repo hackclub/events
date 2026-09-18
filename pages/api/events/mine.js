@@ -1,6 +1,7 @@
 import { getIronSession } from 'iron-session'
 import { sessionOptions } from '../../../lib/session'
-import { isabelle, passThrough } from '../../../lib/isabelle'
+import { isabelle } from '../../../lib/isabelle'
+import { passThroughWithChannels } from '../../../lib/channels'
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -17,5 +18,5 @@ export default async function handler(req, res) {
       session.slackId
     )}`
   )
-  return passThrough(res, response)
+  return passThroughWithChannels(res, response)
 }

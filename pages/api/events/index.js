@@ -35,6 +35,9 @@ export default async function handler(req, res) {
         event_link: values.eventLink,
         rsvp_form_url: values.rsvpFormUrl,
         tags: values.tags,
+        ...(values.recurrence
+          ? { recurrence: values.recurrence }
+          : {}),
         // Never taken from the request: the submitter is whoever is logged in,
         // and approval is Isabelle's decision, not the client's.
         leader_slack_id: session.slackId,
@@ -50,9 +53,10 @@ export default async function handler(req, res) {
 
   if (!isabelleRes.ok) {
     const body = await isabelleRes.json().catch(() => ({}))
-    return res
-      .status(isabelleRes.status)
-      .json({ error: body.error || 'could not create event' })
+    return res.status(isabelleRes.status).json({
+      error: body.error || 'could not create event',
+      ...(body.errors ? { errors: body.errors } : {})
+    })
   }
 
   return res.status(201).json(await isabelleRes.json())
