@@ -18,7 +18,7 @@ export default async function handler(req, res) {
 
   const [manage, rsvps] = await Promise.all([
     isabelle(`/internal/events/${id}/manage?actor_slack_id=${actor}`),
-    isabelle(`/internal/events/${id}/rsvps`)
+    isabelle(`/internal/events/${id}/rsvps?actor_slack_id=${actor}`)
   ])
 
   if (rsvps.status === 404) {
@@ -35,16 +35,24 @@ export default async function handler(req, res) {
     a => a.slackId === session.slackId || (session.sub && a.sub === session.sub)
   )
 
+  const following = Boolean(data.following)
+  const seriesId = data.seriesId || null
+
   if (manage.ok) {
     return res.status(200).json({
       attendees,
       InterestCount: data.InterestCount || 0,
-      attending
+      attending,
+      following,
+      seriesId
     })
   }
 
   return res.status(200).json({
+    InterestCount: data.InterestCount || 0,
     interestCount: data.InterestCount || 0,
-    attending
+    attending,
+    following,
+    seriesId
   })
 }

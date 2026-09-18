@@ -1,4 +1,6 @@
 import { getIronSession } from 'iron-session'
+
+const SCOPES = ['this', 'following', 'all', 'series']
 import { sessionOptions } from '../../../../lib/session'
 import { isabelle, passThrough } from '../../../../lib/isabelle'
 import { clearEventsCache } from '../../../../lib/data'
@@ -20,7 +22,8 @@ export default async function handler(req, res) {
       body: {
         actor_slack_id: session.slackId,
         reason: req.body?.reason,
-        kind: req.body?.kind
+        kind: req.body?.kind,
+        ...(SCOPES.includes(req.body?.scope) ? { scope: req.body.scope } : {})
       }
     }
   )

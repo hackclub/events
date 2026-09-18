@@ -1,6 +1,8 @@
 import { getIronSession } from 'iron-session'
 import { sessionOptions } from '../../../../lib/session'
 
+const RSVP_SCOPES = ['this', 'all']
+
 export default async function handler(req, res) {
   if (req.method !== 'PUT') {
     return res.status(405).json({ error: 'method not allowed' })
@@ -35,7 +37,10 @@ export default async function handler(req, res) {
           slackId: session.slackId,
           name: session.name,
           email: session.email,
-        }
+        },
+        ...(RSVP_SCOPES.includes(req.body?.scope)
+          ? { scope: req.body.scope }
+          : {})
       }),
     }
   )

@@ -1,4 +1,6 @@
 import { getIronSession } from 'iron-session'
+
+const SCOPES = ['this', 'following', 'all']
 import { sessionOptions } from '../../../../lib/session'
 import { isabelle, passThrough } from '../../../../lib/isabelle'
 import { clearEventsCache } from '../../../../lib/data'
@@ -42,7 +44,8 @@ export default async function handler(req, res) {
       end_time: values.end,
       event_link: values.eventLink,
       rsvp_form_url: values.rsvpFormUrl,
-      tags: values.tags
+      tags: values.tags,
+      ...(SCOPES.includes(req.body?.scope) ? { scope: req.body.scope } : {})
     }
   })
 
