@@ -1,6 +1,7 @@
 import { Box, Text, Flex, Avatar, Heading } from 'theme-ui'
 import tt from 'tinytime'
 import Link from 'next/link'
+import { Repeat } from 'react-feather'
 import Sparkles from './sparkles'
 
 const past = dt => new Date(dt) < new Date()
@@ -22,7 +23,20 @@ const tagStyle = {
   mt: 1
 }
 
-const Event = ({ id, slug, title, desc, leader, avatar, start, end, cal, tags }) => (
+const Event = ({
+  id,
+  slug,
+  title,
+  desc,
+  leader,
+  avatar,
+  start,
+  end,
+  cal,
+  tags,
+  seriesCount,
+  seriesRemaining
+}) => (
   <Link href={`/${slug}`} passHref legacyBehavior>
     <Box
       as="a"
@@ -56,6 +70,16 @@ const Event = ({ id, slug, title, desc, leader, avatar, start, end, cal, tags })
       <Heading variant="subheadline" sx={{ mt: 0, mb: 1 }}>
         {title}
       </Heading>
+      {seriesCount > 1 && (
+        <Flex sx={{ alignItems: 'center', gap: 1, color: 'muted', mb: 1 }}>
+          <Repeat size={12} />
+          <Text as="span" sx={{ fontSize: 0 }}>
+            {seriesRemaining > 0
+              ? `${seriesRemaining} more date${seriesRemaining === 1 ? '' : 's'}`
+              : `${seriesCount} dates`}
+          </Text>
+        </Flex>
+      )}
       {tags?.length > 0 && (
         <Box sx={{ mb: 1 }}>
           {tags.map(tag => (
