@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react'
+import PageHeader, { PAGE_WIDTH } from '../../../components/page-header'
 import Head from 'next/head'
 import Link from 'next/link'
 import Meta from '@hackclub/meta'
 import { useRouter } from 'next/router'
-import { Box, Container, Heading, Link as A, Message, Spinner, Text } from 'theme-ui'
+import { Box, Container, Heading, Link as A, Message, Spinner } from 'theme-ui'
 import AuthGate from '../../../components/auth-gate'
 import EventForm from '../../../components/event-form'
 import StatusBadge from '../../../components/status-badge'
+import ScopePicker, { THIS } from '../../../components/scope-picker'
 import { useSession } from '../../../components/session-context'
 import { formFromEvent, payloadFromForm } from '../../../lib/event-form'
 import { statusOf } from '../../../lib/event-status'
@@ -20,6 +22,7 @@ const EditEvent = () => {
   const [loadError, setLoadError] = useState(null)
   const [errors, setErrors] = useState({})
   const [busy, setBusy] = useState(false)
+  const [scope, setScope] = useState(THIS)
 
   useEffect(() => {
     if (!id || !session?.slackId) return
@@ -43,7 +46,10 @@ const EditEvent = () => {
       const res = await fetch(`/api/events/${id}/`, {
         method: 'PATCH',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify(payloadFromForm(form))
+        body: JSON.stringify({
+          ...payloadFromForm(form),
+          ...(event?.seriesId ? { scope } : {})
+        })
       })
       const body = await res.json().catch(() => ({}))
 
@@ -52,7 +58,7 @@ const EditEvent = () => {
         return
       }
 
-      router.push(from === 'review' ? '/review' : '/my-events')
+      router.push(from === 'review' ? '/reviewers-zone' : '/organizers-zone')
     } finally {
       setBusy(false)
     }
@@ -82,7 +88,7 @@ const EditEvent = () => {
         <Heading as="h1" variant="title" sx={{ mb: 2 }}>
           {loadError}
         </Heading>
-        <Link href="/my-events" passHref legacyBehavior>
+        <Link href="/organizers-zone" passHref legacyBehavior>
           <A>Back to your events</A>
         </Link>
       </Container>
@@ -100,21 +106,24 @@ const EditEvent = () => {
   return (
     <>
       <Meta as={Head} name="Hack Club Events" title={`Edit ${event.title}`} />
-      <Box as="header" sx={{ bg: 'sheet', textAlign: 'center', py: [3, 4] }}>
-        <Heading as="h1" variant="title">
-          {event.title}
-        </Heading>
-        <Box sx={{ mt: 2 }}>
-          <StatusBadge event={event} />
-        </Box>
-      </Box>
+      <PageHeader
+        title={event.title}
+        subtitle="Editing"
+        action={<StatusBadge event={event} />}
+      />
 
-      <Container sx={{ maxWidth: 'copy', pt: [3, 4] }}>
+      <Container
+        sx={{ maxWidth: PAGE_WIDTH, pt: [3, 4], display: 'grid', gap: 3 }}
+      >
         <Message variant={statusOf(event) === 'approved' ? 'alert' : undefined}>
           {statusOf(event) === 'approved'
             ? 'This event is already live. Changes go out straight away.'
             : 'This event is still waiting to be reviewed.'}
         </Message>
+
+        {event.seriesId && (
+          <ScopePicker value={scope} onChange={setScope} count={event.seriesCount} />
+        )}
       </Container>
 
       <EventForm
@@ -124,7 +133,7 @@ const EditEvent = () => {
         submitLabel="Save changes"
         onSubmit={onSubmit}
         footer={
-          <Link href={from === 'review' ? '/review' : '/my-events'} passHref legacyBehavior>
+          <Link href={from === 'review' ? '/reviewers-zone' : '/organizers-zone'} passHref legacyBehavior>
             <A sx={{ fontSize: 1 }}>Discard changes</A>
           </Link>
         }

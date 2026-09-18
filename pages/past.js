@@ -1,7 +1,7 @@
 import { Container, Box, Heading } from 'theme-ui'
 import Month from '../components/month'
 import { getEvents } from '../lib/data'
-import { byMonth, past } from '../lib/calendar'
+import { byMonth, lastDateOnly, past } from '../lib/calendar'
 import { toCard } from '../lib/event-card'
 import { mapValues } from 'lodash'
 
@@ -33,7 +33,7 @@ export default ({ months }) => (
 )
 
 export const getStaticProps = async () => {
-  const months = mapValues(byMonth(past(await getEvents())), events =>
+  const months = mapValues(byMonth(past(lastDateOnly(await getEvents()))), events =>
     events.map(toCard)
   )
 

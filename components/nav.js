@@ -92,9 +92,12 @@ export default () => {
       >
         {!home ? <BackButton /> : <Flag />}
         <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center' }}>
-          {capabilities?.canSubmit && <Link href="/submit">Submit</Link>}
-          {session?.slackId && <Link href="/my-events">My events</Link>}
-          {capabilities?.canReview && <Link href="/review">Review</Link>}
+          {session?.slackId && (
+            <Link href="/organizers-zone">Organizers Zone</Link>
+          )}
+          {capabilities?.canReview && (
+            <Link href="/reviewers-zone">Reviewers Zone</Link>
+          )}
           {capabilities?.canReview && (
             <Link href="/organisers">Organisers</Link>
           )}
