@@ -3,9 +3,19 @@ import { Box, Button, Card, Flex, Heading, Label, Text, Textarea } from 'theme-u
 
 const MIN_REASON = 10
 
-const ConfirmReason = ({ event, verb, consequence, busy, error, onConfirm, onDismiss }) => {
+const ConfirmReason = ({
+  event,
+  verb,
+  consequence,
+  consequenceExtra,
+  busy,
+  error,
+  requireReason = true,
+  onConfirm,
+  onDismiss
+}) => {
   const [reason, setReason] = useState('')
-  const ready = reason.trim().length >= MIN_REASON
+  const ready = !requireReason || reason.trim().length >= MIN_REASON
 
   return (
     <Box
@@ -26,23 +36,37 @@ const ConfirmReason = ({ event, verb, consequence, busy, error, onConfirm, onDis
         sx={{ maxWidth: 'copy', width: '100%', bg: 'background' }}
       >
         <Heading as="h2" variant="subheadline" sx={{ mt: 0, mb: 2 }}>
-          {verb === 'reject' ? 'Reject' : 'Cancel'} “{event?.title}”?
+          {verb === 'reject'
+            ? 'Reject'
+            : verb === 'withdraw'
+              ? 'Withdraw'
+              : 'Cancel'}{' '}
+          “{event?.title}”?
         </Heading>
-        <Text as="p" variant="subtitle" sx={{ fontSize: 1, mb: 3 }}>
+        <Text as="p" variant="subtitle" sx={{ fontSize: 1, mb: consequenceExtra ? 2 : 3 }}>
           {consequence}
         </Text>
+        {consequenceExtra && (
+          <Text as="p" sx={{ fontSize: 1, color: 'orange', mb: 3 }}>
+            {consequenceExtra}
+          </Text>
+        )}
 
-        <Label htmlFor="reason">Why?</Label>
-        <Textarea
-          id="reason"
-          rows={3}
-          value={reason}
-          autoFocus
-          onChange={e => setReason(e.target.value)}
-        />
-        <Text as="p" sx={{ fontSize: 0, color: 'muted', mt: 1 }}>
-          The organiser sees this, word for word.
-        </Text>
+        {requireReason && <Label htmlFor="reason">Why?</Label>}
+        {requireReason && (
+          <>
+            <Textarea
+              id="reason"
+              rows={3}
+              value={reason}
+              autoFocus
+              onChange={e => setReason(e.target.value)}
+            />
+            <Text as="p" sx={{ fontSize: 0, color: 'muted', mt: 1 }}>
+              The organiser sees this, word for word.
+            </Text>
+          </>
+        )}
 
         {error && (
           <Text as="p" sx={{ fontSize: 1, color: 'red', mt: 2 }}>
@@ -57,7 +81,13 @@ const ConfirmReason = ({ event, verb, consequence, busy, error, onConfirm, onDis
             onClick={() => onConfirm(reason.trim())}
             sx={{ bg: 'red' }}
           >
-            {busy ? 'Working…' : verb === 'reject' ? 'Reject event' : 'Cancel event'}
+            {busy
+              ? 'Working…'
+              : verb === 'reject'
+                ? 'Reject event'
+                : verb === 'withdraw'
+                  ? 'Withdraw event'
+                  : 'Cancel event'}
           </Button>
           <Button type="button" variant="outline" onClick={onDismiss} disabled={busy}>
             Nevermind
