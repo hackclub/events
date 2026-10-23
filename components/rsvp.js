@@ -51,7 +51,8 @@ const Rsvp = ({ event }) => {
   const [count, setCount] = useState(event.interestCount || 0)
   const [loading, setLoading] = useState(false)
   const [attendees, setAttendees] = useState(null)
-  const [isCreator, setIsCreator] = useState(false)
+  const [canSeeAttendees, setCanSeeAttendees] = useState(false)
+  const [limited, setLimited] = useState(false)
   const [showMenu, setShowMenu] = useState(false)
 
   const copyToClipboard = async (text, label) => {
@@ -77,7 +78,9 @@ const Rsvp = ({ event }) => {
   )
 
   const copyFullList = () => copyToClipboard(
-    attendees.map(a => `${a.name || a.slackDisplayName || ''}\t${a.email || ''}\t${a.slackId || ''}`)
+    attendees.map(a => limited
+      ? `${a.slackDisplayName || ''}\t${a.slackId || ''}`
+      : `${a.name || a.slackDisplayName || ''}\t${a.email || ''}\t${a.slackId || ''}`)
     .join('\n'), 'attendees'
   )
 
@@ -98,21 +101,19 @@ const Rsvp = ({ event }) => {
   }
 
   const exportCsv = () => {
-    const headers = [
-      'Name',
-      'Slack Display Name',
-      'Slack ID',
-      'Email',
-      'RSVPed At'
-    ]
+    const headers = limited
+      ? ['Slack Display Name', 'Slack ID']
+      : ['Name', 'Slack Display Name', 'Slack ID', 'Email', 'RSVPed At']
 
-    const rows = attendees.map(a => [
-      a.name || '',
-      a.slackDisplayName || '',
-      a.slackId || '',
-      a.email || '',
-      a.rsvpedAt || ''
-    ])
+    const rows = attendees.map(a => limited
+      ? [a.slackDisplayName || '', a.slackId || '']
+      : [
+          a.name || '',
+          a.slackDisplayName || '',
+          a.slackId || '',
+          a.email || '',
+          a.rsvpedAt || ''
+        ])
 
     const csv = [
       headers.join(','),
@@ -141,14 +142,15 @@ const Rsvp = ({ event }) => {
 
   useEffect(() => {
     if (!session?.slackId) return
-    const creator = session.slackId === event.leaderSlackId
-    setIsCreator(creator)
     fetch(`/api/events/${event.id}/rsvps/`)
     .then(r => r.json())
     .then(data => {
         setCount(data.InterestCount ?? count)
         setAttending(data.attending || false)
-        if (creator) setAttendees(data.attendees || [])
+        const listed = Array.isArray(data.attendees)
+        setCanSeeAttendees(listed)
+        setLimited(Boolean(data.limited))
+        if (listed) setAttendees(data.attendees)
       }).catch(() => {})
   }, [session])
 
@@ -166,7 +168,7 @@ const Rsvp = ({ event }) => {
       if (res.ok) {
         setAttending(newAttending)
         setCount(data.InterestCount)
-        if (isCreator) {
+        if (canSeeAttendees) {
           const rsvpRes = await fetch(`/api/events/${event.id}/rsvps/`)
           const rsvpData = await rsvpRes.json()
           setAttendees(rsvpData.attendees || [])
@@ -236,7 +238,7 @@ const Rsvp = ({ event }) => {
           {count} {count === 1 ? 'person' : 'people'} going
         </Text>
       </Flex>
-      {isCreator && attendees !== null && (
+      {canSeeAttendees && attendees !== null && (
         <Box sx={{ mt: 3 }}>
           <Divider sx={{ mb: 3 }} />
           <Flex
@@ -308,13 +310,15 @@ const Rsvp = ({ event }) => {
                         Copy Names
                       </Box>
 
-                      <Box
-                        as="button"
-                        onClick={copyEmails}
-                        sx={menuItemStyles}
-                      >
-                        Copy Emails
-                      </Box>
+                      {!limited && (
+                        <Box
+                          as="button"
+                          onClick={copyEmails}
+                          sx={menuItemStyles}
+                        >
+                          Copy Emails
+                        </Box>
+                      )}
 
                       <Box
                         as="button"
