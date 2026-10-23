@@ -2,6 +2,7 @@ import { getIronSession } from 'iron-session'
 import { sessionOptions } from '../../../../lib/session'
 import { getEvents } from '../../../../lib/data'
 import { find } from 'lodash'
+import { attendeeAccess, limitAttendee } from '../../../../lib/rsvp-access'
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -23,8 +24,6 @@ export default async function handler(req, res) {
     return res.status(404).json({ error: 'event not found' })
   }
 
-  const isCreator = session.slackId === event.leaderSlackId
-
   const isabelleRes = await fetch(
     `${process.env.ISABELLE_BASE_URL}/internal/events/${id}/rsvps`,
     {
@@ -41,9 +40,13 @@ export default async function handler(req, res) {
   const data = await isabelleRes.json()
   const attending = (data.attendees || []).some(a => a.slackId === session.slackId || (session.sub && a.sub === session.sub))
 
-  if (isCreator) {
+  const access = attendeeAccess(session.slackId, event.leaderSlackId)
+
+  if (access !== 'none') {
+    const attendees = data.attendees || []
     return res.status(200).json({
-      attendees: data.attendees || [],
+      attendees: access === 'full' ? attendees : attendees.map(limitAttendee),
+      limited: access === 'limited',
       InterestCount: data.InterestCount || 0,
       attending,
     })
